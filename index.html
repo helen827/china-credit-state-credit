@@ -1,345 +1,900 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>中国经济的国家信用</title>
-    <meta
-      name="description"
-      content="一页解释中国经济信用主体如何从国家、外贸、地产，切换到中央财政与科技产业。"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700;900&family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body>
-    <header class="hero" id="top">
-      <nav class="topbar" aria-label="主导航">
-        <a class="brand" href="#top">国家信用</a>
-        <div class="navlinks">
-          <a href="#timeline">四代主体</a>
-          <a href="#dashboard">数据证据</a>
-          <a href="#people">普通人</a>
-          <button class="edit-btn" id="editToggle" type="button">编辑</button>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+        
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .header .meta {
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+        
+        .content {
+            padding: 50px 40px;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+        }
+        
+        .section h2 {
+            font-size: 1.8em;
+            color: #1e3c72;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .section h3 {
+            font-size: 1.4em;
+            color: #2a5298;
+            margin: 30px 0 15px 0;
+        }
+        
+        .section h4 {
+            font-size: 1.2em;
+            color: #444;
+            margin: 25px 0 12px 0;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-left: 5px solid #667eea;
+            padding: 25px 30px;
+            margin: 25px 0;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .highlight-box p {
+            margin: 0;
+            font-size: 1.1em;
+            color: #1e3c72;
+            font-weight: 500;
+        }
+        
+        .key-point {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px 25px;
+            margin: 20px 0;
+        }
+        
+        .key-point strong {
+            color: #856404;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+        
+        th, td {
+            padding: 14px 18px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9ff;
+        }
+        
+        tbody tr:nth-child(even) {
+            background: #fafbfc;
+        }
+        
+        tbody tr:nth-child(even):hover {
+            background: #f0f2ff;
+        }
+        
+        ul, ol {
+            margin: 15px 0 15px 25px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        a:hover {
+            border-bottom-color: #667eea;
+        }
+        
+        .credit-phase {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            border-radius: 15px;
+            padding: 25px 30px;
+            margin: 20px 0;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .credit-phase h4 {
+            color: #1e3c72;
+            margin-top: 0;
+        }
+        
+        .comparison-table {
+            margin: 25px 0;
+        }
+        
+        .comparison-table th {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 30px 40px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin: 5px;
+            font-weight: 500;
+        }
+        
+        .data-source {
+            background: #f0f4f8;
+            border-radius: 10px;
+            padding: 20px 25px;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        
+        .data-source h4 {
+            margin-top: 0;
+            color: #1e3c72;
+        }
+        
+        .data-source ul {
+            margin: 10px 0 0 20px;
+        }
+        
+        .data-source li {
+            margin: 5px 0;
+        }
+        
+        blockquote {
+            background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+            border-left: 5px solid #667eea;
+            padding: 20px 25px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+            font-style: italic;
+            color: #555;
+        }
+        
+        .metric-highlight {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #e74c3c;
+        }
+        
+        .positive {
+            color: #27ae60;
+        }
+        
+        .negative {
+            color: #e74c3c;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 10px;
+            }
+            
+            .header {
+                padding: 40px 25px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content {
+                padding: 30px 25px;
+            }
+            
+            table {
+                font-size: 0.85em;
+            }
+            
+            th, td {
+                padding: 10px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>中国经济的国家信用</h1>
+            <div class="subtitle">房地产退潮，不只是资产价格变化，而是信用主体切换</div>
+            <div class="meta">来源：https://helen827.github.io/china-credit-state-credit/ | 整理时间：2026-06-26</div>
         </div>
-      </nav>
-      <div class="edit-status" id="editStatus" role="status" aria-live="polite"></div>
-
-      <section class="hero-grid">
-        <div class="hero-copy">
-          <p class="eyebrow">China Credit Regime</p>
-          <h1>中国经济的国家信用</h1>
-          <p class="lead">
-            一个时代最重要的问题，不是“钱从哪里来”，而是：谁的未来可以被相信？
-          </p>
-          <p class="hero-note">
-            信用的本质不是钱，而是对未来的提前确认。过去四十多年，中国经济的主线，就是信用主体不断迁移：
-            从国家资产，到全球订单，到土地资产负债表，再到中央财政与科技产业。
-          </p>
-          <div class="hero-actions">
-            <a class="primary-btn" href="#dashboard">查看数据</a>
-            <a class="ghost-btn" href="#thesis">阅读全文</a>
-          </div>
-        </div>
-        <div class="hero-visual" aria-label="信用主体迁移图">
-          <div class="credit-orbit">
-            <span class="axis-label top">国家意志</span>
-            <span class="axis-label right">全球需求</span>
-            <span class="axis-label bottom">居民资产负债表</span>
-            <span class="axis-label left">生产率</span>
-            <div class="pulse-ring ring-one"></div>
-            <div class="pulse-ring ring-two"></div>
-            <div class="credit-node node-state">国家</div>
-            <div class="credit-node node-export">订单</div>
-            <div class="credit-node node-land">土地</div>
-            <div class="credit-node node-tech">科技</div>
-            <div class="center-mark">
-              <strong>信用</strong>
-              <span>future claim</span>
-            </div>
-          </div>
-        </div>
-      </section>
-    </header>
-
-    <main>
-      <section class="section thesis" id="thesis">
-        <div class="section-label">核心判断</div>
-        <div class="thesis-layout">
-          <h2>房地产退潮，不只是资产价格变化，而是信用主体切换。</h2>
-          <p>
-            当一个主体能够被国家、银行、居民、资本市场和全球买家共同相信，它就会成为信用扩张的核心抵押品。
-            房地产时代，抵押品是土地和房子；科技产业时代，抵押品正在变成先进制造能力、真实现金流、高技术出口和长期资本市场认可。
-          </p>
-        </div>
-      </section>
-
-      <section class="section timeline-section" id="timeline">
-        <div class="section-head">
-          <div>
-            <div class="section-label">四代信用主体</div>
-            <h2>中国经济信用体系的四次迁移</h2>
-          </div>
-          <p>
-            每一代信用主体，都是当时最能把“未来”变成“今天可融资能力”的系统。
-          </p>
-        </div>
-
-        <div class="timeline">
-          <article class="era-card active" data-era="state">
-            <span class="era-index">01</span>
-            <h3>国家信用</h3>
-            <p>改革开放前后，国家掌握资源、组织生产、定义价值。</p>
-            <strong>国家资产与计划体系</strong>
-          </article>
-          <article class="era-card" data-era="export">
-            <span class="era-index">02</span>
-            <h3>外贸企业信用</h3>
-            <p>加入 WTO 后，订单、出口能力和美元收入成为企业信用来源。</p>
-            <strong>出口企业与全球订单</strong>
-          </article>
-          <article class="era-card" data-era="land">
-            <span class="era-index">03</span>
-            <h3>地方政府与房地产信用</h3>
-            <p>2008 年后，土地、按揭、城投平台和居民资产负债表形成信用机器。</p>
-            <strong>地方政府与房地产资产负债表</strong>
-          </article>
-          <article class="era-card" data-era="tech">
-            <span class="era-index">04</span>
-            <h3>中央财政与科技产业信用</h3>
-            <p>新信用主体转向能提升生产率、承接战略资源、进入全球市场的科技制造企业。</p>
-            <strong>中央财政与高技术产业链</strong>
-          </article>
-        </div>
-      </section>
-
-      <section class="section switch-section">
-        <div class="section-label">新抵押品</div>
-        <h2>新的国家信用，为什么落在科技制造上？</h2>
-        <div class="capability-grid">
-          <article>
-            <span>1</span>
-            <h3>提高生产率</h3>
-            <p>产业升级必须带来单位劳动、资本、能源和数据的更高产出，而不只是讲故事。</p>
-          </article>
-          <article>
-            <span>2</span>
-            <h3>形成真实现金流</h3>
-            <p>信用可以提前确认未来，但最终要由订单、利润、税收和出口收入兑现。</p>
-          </article>
-          <article>
-            <span>3</span>
-            <h3>承接战略资源</h3>
-            <p>财政资金、国有资本、产业基金、采购体系和人才政策，会向战略方向集中。</p>
-          </article>
-          <article>
-            <span>4</span>
-            <h3>进入全球市场</h3>
-            <p>只有国内认可还不够。能够被全球供应链、客户和资本重新定价，才有更强信用。</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="section dashboard-section" id="dashboard">
-        <div class="section-head">
-          <div>
-            <div class="section-label">数据证据</div>
-            <h2>国家信用正在向高技术产业倾斜</h2>
-          </div>
-          <p>
-            下面把原稿中最需要落地的三类问题拆成可核验口径：政府引导基金与 R&D 强度、税费优惠与财政科技支出、IPO 的科技属性。
-          </p>
-        </div>
-
-        <div class="evidence-stack">
-          <article class="evidence-card">
-            <div class="evidence-copy">
-              <span class="evidence-tag">01 / 创新基金</span>
-              <h3>国家把“耐心资本”铺到早期、成长期和产业化环节。</h3>
-              <p>
-                政府引导基金是财政资金进入科技产业的主要股权通道。更值得看的不是单个项目补贴，而是它能撬动多少社会资本、覆盖多少产业链阶段。
-              </p>
-              <div class="source-links">
-                <a href="https://www.cnfin.com/gs-lb/detail/20250226/4192739_1.html" target="_blank" rel="noreferrer">新华财经：引导基金规模</a>
-                <a href="https://research.pedaily.cn/202502/546594.shtml" target="_blank" rel="noreferrer">清科：2024 引导基金统计</a>
-                <a href="https://www.stats.gov.cn/sj/zxfbhjd/202509/t20250929_1961429.html" target="_blank" rel="noreferrer">国家统计局：R&D 投入</a>
-              </div>
-            </div>
-            <div class="evidence-visual">
-              <div class="big-number">12.84<span>万亿</span></div>
-              <p class="number-note">截至 2024 年底，政府引导基金总目标规模约 12.84 万亿元，已认缴约 7.70 万亿元。</p>
-              <div class="funnel-bars" data-chart="fund"></div>
-              <div class="mini-stats">
-                <span><strong>2,178</strong>只累计设立</span>
-                <span><strong>113</strong>只 2024 年新设产业/创投类</span>
-                <span><strong>6,510</strong>亿元 2024 年新设认缴</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="evidence-card">
-            <div class="evidence-copy">
-              <span class="evidence-tag">02 / 企业优惠与资助</span>
-              <h3>全国可比的“资助”，主要体现在税费优惠与财政科技支出。</h3>
-              <p>
-                高新企业的地方现金奖补分散在各省市，缺少统一全国总表。更可比的全国口径，是高新技术企业 15% 所得税、研发费用加计扣除、重点产业税费优惠，以及财政科学技术支出。
-              </p>
-              <div class="source-links">
-                <a href="https://www.most.gov.cn/kjbgz/202403/t20240313_189961.html" target="_blank" rel="noreferrer">科技部：科技创新税费政策指引</a>
-                <a href="https://shanghai.chinatax.gov.cn/xwdt/ztzl/zhl/yhysgj/gzdt/zjdt/202502/t475254.html" target="_blank" rel="noreferrer">税务总局：2024 科技制造税费优惠</a>
-                <a href="https://www.stats.gov.cn/sj/zxfbhjd/202509/t20250929_1961429.html" target="_blank" rel="noreferrer">国家统计局：财政科技支出</a>
-              </div>
-            </div>
-            <div class="evidence-visual">
-              <div class="tax-grid">
-                <div>
-                  <span>科技创新和制造业政策</span>
-                  <strong>26,293 亿</strong>
-                  <small>2024 年减税降费及退税</small>
+        
+        <div class="content">
+            <!-- 核心判断 -->
+            <div class="section">
+                <h2>核心判断</h2>
+                <div class="highlight-box">
+                    <p>房地产退潮，不只是资产价格变化，而是信用主体切换。</p>
                 </div>
-                <div>
-                  <span>研发费用加计扣除等</span>
-                  <strong>8,069 亿</strong>
-                  <small>支持加大科技投入和成果转让</small>
-                </div>
-                <div>
-                  <span>高新企业/新兴产业</span>
-                  <strong>4,662 亿</strong>
-                  <small>含高新企业 15% 所得税等</small>
-                </div>
-                <div>
-                  <span>财政科学技术支出</span>
-                  <strong>12,115 亿</strong>
-                  <small>2024 年全国财政科技支出</small>
-                </div>
-              </div>
-              <div class="policy-row">
-                <span>企业所得税</span>
-                <strong>25% → 15%</strong>
-                <span>研发费用</span>
-                <strong>100% 加计扣除</strong>
-              </div>
+                <p>当一个主体能够被国家、银行、居民、资本市场和全球买家共同相信，它就会成为信用扩张的核心抵押品。房地产时代，抵押品是土地和房子；科技产业时代，抵押品正在变成先进制造能力、真实现金流、高技术出口和长期资本市场认可。</p>
             </div>
-          </article>
-
-          <article class="evidence-card">
-            <div class="evidence-copy">
-              <span class="evidence-tag">03 / IPO 比例</span>
-              <h3>上市通道正在用板块结构筛选“科技含量”。</h3>
-              <p>
-                严格说，“高技术企业 IPO 占比”没有唯一官方分类。这里用两个代理口径：科创板+创业板+北交所代表创新型上市通道；科创板+创业板代表更窄的科创成长板块。
-              </p>
-              <div class="source-links">
-                <a href="https://research.pedaily.cn/202601/559592.shtml" target="_blank" rel="noreferrer">清科：2025 IPO 盘点</a>
-                <a href="https://www.sse.com.cn/ipo/listing/" target="_blank" rel="noreferrer">上交所：新股发行一览</a>
-                <a href="https://listing.szse.cn/projectdynamic/ipo/index.html" target="_blank" rel="noreferrer">深交所：IPO 项目动态</a>
-              </div>
-            </div>
-            <div class="evidence-visual">
-              <div class="ipo-layout">
-                <div class="donut" style="--p: 67">
-                  <span>67%</span>
+            
+            <!-- 四次迁移 -->
+            <div class="section">
+                <h2>中国经济信用体系的四次迁移</h2>
+                <p>每一代信用主体，都是当时最能把"未来"变成"今天可融资能力"的系统。</p>
+                
+                <div class="credit-phase">
+                    <h4>01 — 国家信用</h4>
+                    <ul>
+                        <li><strong>时期：</strong>改革开放前后</li>
+                        <li><strong>机制：</strong>国家掌握资源、组织生产、定义价值</li>
+                        <li><strong>抵押品：</strong>国家资产与计划体系</li>
+                    </ul>
                 </div>
-                <div>
-                  <h4>2025 年 116 家 A 股 IPO</h4>
-                  <p>创新型板块代理：创业板 33 家 + 北交所 26 家 + 科创板 19 家，约占 67%。</p>
-                  <p>窄口径：科创板 + 创业板为 52 家，占 45% 左右。</p>
+                
+                <div class="credit-phase">
+                    <h4>02 — 外贸企业信用</h4>
+                    <ul>
+                        <li><strong>时期：</strong>加入 WTO 后</li>
+                        <li><strong>机制：</strong>订单、出口能力和美元收入成为企业信用来源</li>
+                        <li><strong>抵押品：</strong>出口企业与全球订单</li>
+                    </ul>
                 </div>
-              </div>
-              <div class="bars" data-chart="ipoBoards"></div>
+                
+                <div class="credit-phase">
+                    <h4>03 — 地方政府与房地产信用</h4>
+                    <ul>
+                        <li><strong>时期：</strong>2008 年后</li>
+                        <li><strong>机制：</strong>土地、按揭、城投平台和居民资产负债表形成信用机器</li>
+                        <li><strong>抵押品：</strong>地方政府与房地产资产负债表</li>
+                    </ul>
+                </div>
+                
+                <h3>附：房地产行业完整数据</h3>
+                
+                <h4>中国房地产从几几年开始？</h4>
+                <p>中国房地产行业经历了三个关键阶段，真正市场化起步是 <strong>1998年</strong>：</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>阶段</th>
+                            <th>时间</th>
+                            <th>关键事件</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>探索试点阶段</td>
+                            <td>1978-1988年</td>
+                            <td>1980年邓小平提出住房商品化；1982年"三三制"补贴售房试点</td>
+                        </tr>
+                        <tr>
+                            <td>逐步推开阶段</td>
+                            <td>1988-1998年</td>
+                            <td>1988年第一次全国房改会议；1994年《深化城镇住房制度改革决定》</td>
+                        </tr>
+                        <tr>
+                            <td><strong>全面市场化阶段</strong></td>
+                            <td><strong>1998年至今</strong></td>
+                            <td><strong>1998年7月3日国务院"23号令"停止福利分房，实行住房分配货币化</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="key-point">
+                    <strong>关键结论：</strong>中国房地产真正商品化、市场化是从<strong>1998年</strong>开始的，但房改源头可追溯至1978年邓小平关于住房问题的讲话。
+                </div>
+                
+                <h4>A股房地产板块市值变化</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>指标</th>
+                            <th>数据</th>
+                            <th>来源</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>房地产行业指数自2021年初累计跌幅</td>
+                            <td class="negative"><strong>-44.61%</strong></td>
+                            <td>中国财富研究院，2026年5月</td>
+                        </tr>
+                        <tr>
+                            <td>跑输沪深300幅度</td>
+                            <td class="negative"><strong>-37.48个百分点</strong></td>
+                            <td>同上</td>
+                        </tr>
+                        <tr>
+                            <td>2025年行业市值管理得分</td>
+                            <td><strong>48.93分</strong>（低于A股均值49.16分）</td>
+                            <td>同上</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4>全国房地产销售数据</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>年份</th>
+                            <th>新建商品房销售面积</th>
+                            <th>销售金额</th>
+                            <th>同比变化</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2024年</td>
+                            <td>97,385万㎡</td>
+                            <td>96,750亿元</td>
+                            <td class="negative">面积-12.9%，金额-17.1%</td>
+                        </tr>
+                        <tr>
+                            <td>历史高点（约2021年）</td>
+                            <td>约179,400万㎡</td>
+                            <td>约181,900亿元</td>
+                            <td>—</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <blockquote>
+                    2024年销售面积回落至<strong>2009年水平</strong>，销售金额回到<strong>2015-2016年水平</strong>。
+                </blockquote>
+                
+                <h4>主要房企市值变化（万科 vs 保利）</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>时间节点</th>
+                            <th>万科A市值</th>
+                            <th>保利发展市值</th>
+                            <th>备注</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2016年8月（宝能事件后）</td>
+                            <td class="metric-highlight">2,578亿</td>
+                            <td>875亿</td>
+                            <td>万科是保利的2.95倍</td>
+                        </tr>
+                        <tr>
+                            <td>2022年3月11日</td>
+                            <td>1,936亿</td>
+                            <td class="metric-highlight">1,943亿</td>
+                            <td><strong>保利首次反超万科</strong>，成为A股房企市值一哥</td>
+                        </tr>
+                        <tr>
+                            <td>2024-2025年</td>
+                            <td class="negative">持续下滑</td>
+                            <td class="positive">相对抗跌</td>
+                            <td>行业深度调整</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4>2025年房地产上市公司综合实力TOP10</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>排名</th>
+                            <th>企业名称</th>
+                            <th>性质</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>华润置地</td><td><span class="tag">央企</span></td></tr>
+                        <tr><td>2</td><td>保利发展</td><td><span class="tag">央企</span></td></tr>
+                        <tr><td>3</td><td>中国海外发展</td><td><span class="tag">央企</span></td></tr>
+                        <tr><td>4</td><td>招商蛇口</td><td><span class="tag">央企</span></td></tr>
+                        <tr><td>5</td><td>龙湖集团</td><td><span class="tag" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);">民营</span></td></tr>
+                        <tr><td>6</td><td>绿城中国</td><td><span class="tag" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);">混合所有制</span></td></tr>
+                        <tr><td>7</td><td>万科A</td><td><span class="tag" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);">地方国企</span></td></tr>
+                        <tr><td>8</td><td>越秀地产</td><td><span class="tag" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);">地方国企</span></td></tr>
+                        <tr><td>9</td><td>华发股份</td><td><span class="tag" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);">地方国企</span></td></tr>
+                        <tr><td>10</td><td>新城控股</td><td><span class="tag" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);">民营</span></td></tr>
+                    </tbody>
+                </table>
+                
+                <h4>市值变化核心趋势</h4>
+                <ul>
+                    <li><strong>2015-2021年：</strong>黄金末期，万科市值一度超过2500亿</li>
+                    <li><strong>2021-2025年：</strong>深度调整，行业指数累计下跌44.61%，民营房企大面积出险</li>
+                    <li><strong>估值逻辑重塑：</strong>从"规模扩张"转向"现金流稳定性+资产运营能力"，央企/国企房企市值相对抗跌</li>
+                </ul>
+                
+                <div class="data-source">
+                    <h4>数据来源</h4>
+                    <ul>
+                        <li><a href="http://paper.people.com.cn/zgjjzk/html/2018-12/24/content_1901586.htm" target="_blank">中国房改历程（人民网）</a></li>
+                        <li><a href="https://m.jiemian.com/article/3526210.html" target="_blank">中国房改回眸1998（界面新闻）</a></li>
+                        <li><a href="http://www.fangchan.com/industry/23/2025-05-22/7330856518818271608.html" target="_blank">2025房地产上市公司测评（中房网）</a></li>
+                        <li><a href="https://wap.eastmoney.com/a/202606173774486673.html" target="_blank">2025市值管理成效盘点（东方财富）</a></li>
+                        <li><a href="https://www.stcn.com/stock/gsdt/202203/t20220312_4233552.html" target="_blank">保利反超万科（证券时报）</a></li>
+                    </ul>
+                </div>
+                
+                <div class="credit-phase">
+                    <h4>04 — 中央财政与科技产业信用</h4>
+                    <ul>
+                        <li><strong>时期：</strong>当前</li>
+                        <li><strong>机制：</strong>新信用主体转向能提升生产率、承接战略资源、进入全球市场的科技制造企业</li>
+                        <li><strong>抵押品：</strong>中央财政与高技术产业链</li>
+                    </ul>
+                </div>
             </div>
-          </article>
+            
+            <!-- 日本对照 -->
+            <div class="section">
+                <h2>对照：日本——房市是股市信心的底层来源</h2>
+                
+                <div class="highlight-box">
+                    <p>日本提供了一个重要参照：<strong>房价上涨不是股市的副产品，而是股市信心的底层来源。</strong></p>
+                </div>
+                
+                <h3>日本房价最近一直在涨</h3>
+                <p>从2020年开始，日本全境特别是大城市的房地产价格持续走高，东京、大阪的房价以年均15%-30%的涨幅冲向历史高点。</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>指标</th>
+                            <th>数据</th>
+                            <th>时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>东京23区新建公寓均价</td>
+                            <td class="metric-highlight">1.3309亿日元（约624.79万元人民币）</td>
+                            <td>2025年4-9月，同比+20.4%</td>
+                        </tr>
+                        <tr>
+                            <td>东京23区二手房均价</td>
+                            <td class="metric-highlight">每70㎡ 1.1034亿日元（约515.05万元人民币）</td>
+                            <td>2025年9月，首次突破1.1亿日元</td>
+                        </tr>
+                        <tr>
+                            <td>东京住宅价格指数（2020年10月=100）</td>
+                            <td><strong>107.3</strong></td>
+                            <td>2024年4月，连续5次上涨，涨幅1.5%创历史新高</td>
+                        </tr>
+                        <tr>
+                            <td>大阪住宅价格指数（2020年10月=100）</td>
+                            <td><strong>116.6</strong></td>
+                            <td>2024年4月，涨幅同样创新高</td>
+                        </tr>
+                        <tr>
+                            <td>东京23区中古公寓年增率</td>
+                            <td class="metric-highlight">28.3%</td>
+                            <td>2025年4月，数据收集以来最高增长率</td>
+                        </tr>
+                        <tr>
+                            <td>东京23区租金同比涨幅</td>
+                            <td><strong>6.7%</strong></td>
+                            <td>2025年，2019年以来最强劲增长</td>
+                        </tr>
+                        <tr>
+                            <td>外国投资者占东京新房交易比例</td>
+                            <td><strong>20%-40%</strong></td>
+                            <td>2025年，三菱日联信托银行调查</td>
+                        </tr>
+                        <tr>
+                            <td>日本上半年房地产投资全球排名</td>
+                            <td class="positive"><strong>全球第一</strong>，投资额增长22%</td>
+                            <td>2025年上半年，创有统计以来最高</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <blockquote>
+                    2025年3月，大东京地区新建公寓平均价格达到<strong>1.0485亿日元</strong>，年增率高达<strong>37.5%</strong>，历史上月平均价格第二次超过1亿日元。
+                </blockquote>
+                
+                <h3>日本股市也在涨</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>指标</th>
+                            <th>数据</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>日经225指数（2026年6月25日收盘）</td>
+                            <td class="metric-highlight">72,467.42点，+4.61%（单日+3,191.37点）</td>
+                        </tr>
+                        <tr>
+                            <td>日经225历史高点</td>
+                            <td>1989年12月 <strong>38,915.87点</strong> → 2024年突破 <strong>40,000点</strong></td>
+                        </tr>
+                        <tr>
+                            <td>2012年安倍经济学起点</td>
+                            <td>约8,000-9,000点</td>
+                        </tr>
+                        <tr>
+                            <td>2012-2024年累计涨幅</td>
+                            <td class="positive">约 <strong>4-5倍</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>关键判断：房市是股市信心的底层来源</h3>
+                <p>日本案例表明，<strong>房地产和股市不是独立运行的两个市场，而是共享同一个信用底层</strong>：</p>
+                
+                <h4>1. 财富效应传导</h4>
+                <ul>
+                    <li>房价上涨 → 居民资产负债表修复 → 消费和投资信心回升 → 企业盈利改善 → 股市上涨</li>
+                    <li>日本2025年核心CPI连续48个月同比上升，出现"薪资-价格"正向螺旋初期迹象</li>
+                </ul>
+                
+                <h4>2. 外资流入的底层逻辑</h4>
+                <ul>
+                    <li>外资进入日本股市和楼市，底层是对"日本资产重估"的共识</li>
+                    <li>2025年上半年外资占日本房地产投资的<strong>34%</strong>，投资额首次超过<strong>1万亿日元</strong></li>
+                    <li>巴菲特投资日本五大商社，底层也是看好日本资产的长期重估</li>
+                </ul>
+                
+                <h4>3. 信用扩张的抵押品</h4>
+                <ul>
+                    <li>房地产是日本家庭和企业最重要的抵押品</li>
+                    <li>房价上涨 → 抵押品价值上升 → 信贷扩张能力增强 → 经济活动活跃</li>
+                    <li>这正是"信用主体"理论的日本验证</li>
+                </ul>
+                
+                <h4>4. 与中国的对比</h4>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>维度</th>
+                            <th>日本（2020-2025）</th>
+                            <th>中国（2021-2025）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>房价趋势</strong></td>
+                            <td class="positive">持续上涨，东京大阪创历史新高</td>
+                            <td class="negative">持续下跌，回落至2009年水平</td>
+                        </tr>
+                        <tr>
+                            <td><strong>股市趋势</strong></td>
+                            <td class="positive">日经225突破4万点，创历史新高</td>
+                            <td>A股震荡，房地产指数跌44.61%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>信用底层</strong></td>
+                            <td class="positive">房地产作为抵押品功能恢复</td>
+                            <td class="negative">房地产抵押品功能弱化</td>
+                        </tr>
+                        <tr>
+                            <td><strong>外资态度</strong></td>
+                            <td class="positive">大量外资流入股市和楼市</td>
+                            <td>外资对房地产谨慎</td>
+                        </tr>
+                        <tr>
+                            <td><strong>核心差异</strong></td>
+                            <td class="positive"><strong>房市涨 → 信用扩张 → 股市涨</strong></td>
+                            <td class="negative"><strong>房市跌 → 信用收缩 → 寻找新抵押品</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="key-point">
+                    <strong>核心结论：</strong>日本股市上涨的信心，很大程度上来自于房市的复苏。房市作为抵押品的功能恢复，是整个信用体系重新运转的前提。中国当前面临的挑战，正是房地产抵押品功能弱化后，需要找到新的信用承载主体——这就是"科技制造"被推到前台的根本原因。
+                </div>
+                
+                <h3>日本房地产复苏的驱动因素</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>因素</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>低利率环境</td>
+                            <td>日本央行结束负利率但步伐谨慎，融资成本仍全球最低</td>
+                        </tr>
+                        <tr>
+                            <td>日元贬值</td>
+                            <td>吸引外资抄底日本资产</td>
+                        </tr>
+                        <tr>
+                            <td>供应短缺</td>
+                            <td>大东京地区新建公寓供应量降至1973年以来最低</td>
+                        </tr>
+                        <tr>
+                            <td>旅游复苏</td>
+                            <td>入境游客激增，酒店和民宿投资活跃</td>
+                        </tr>
+                        <tr>
+                            <td>城市再开发</td>
+                            <td>东京、大阪持续进行大型城市更新项目</td>
+                        </tr>
+                        <tr>
+                            <td>人口集中</td>
+                            <td>东京、大阪、福冈等核心城市持续人口净流入</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="data-source">
+                    <h4>数据来源</h4>
+                    <ul>
+                        <li><a href="https://zh.cn.nikkei.com/industry/propertiesconstruction/55756-2024-05-31-05-00-22.html" target="_blank">全球15城房价：东京大阪涨幅居首（日经中文网）</a></li>
+                        <li><a href="https://www.japan-property.jp/zh-TW/blog-news/details114" target="_blank">2025年东京房地产市场：外国投资者综合指南</a></li>
+                        <li><a href="https://www.globalg.com.tw/article/100" target="_blank">日本不动产市场深度分析与未来展望(2025-2030)</a></li>
+                        <li><a href="https://www.21jingji.com/article/20251106/herald/028888dfe5fbe873f99f7f0ff64376f8.html" target="_blank">日本物价持续高烧，外资大举扫货东京大阪核心区房产（21财经）</a></li>
+                        <li><a href="http://global.mf-realty.jp/report/chinese/detail/1680" target="_blank">PROPERTY MARKET TRENDS｜2025年第1季度（三井不动产）</a></li>
+                        <li><a href="https://indexes.nikkei.co.jp/cz/nkave/index/profile" target="_blank">日经225指数官方数据</a></li>
+                        <li><a href="https://pdf.dfcfw.com/pdf/H3_AP202405201633865160_1.pdf" target="_blank">日本经济、人口变迁与房地产市场发展之启示（财信证券）</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 为什么落在科技制造 -->
+            <div class="section">
+                <h2>新的国家信用为什么落在科技制造上？</h2>
+                
+                <h3>1. 提高生产率</h3>
+                <p>产业升级必须带来单位劳动、资本、能源和数据的更高产出，而不只是讲故事。</p>
+                
+                <h3>2. 形成真实现金流</h3>
+                <p>信用可以提前确认未来，但最终要由订单、利润、税收和出口收入兑现。</p>
+                
+                <h3>3. 承接战略资源</h3>
+                <p>财政资金、国有资本、产业基金、采购体系和人才政策，会向战略方向集中。</p>
+                
+                <h3>4. 进入全球市场</h3>
+                <p>只有国内认可还不够。能够被全球供应链、客户和资本重新定价，才有更强信用。</p>
+            </div>
+            
+            <!-- 数据证据 -->
+            <div class="section">
+                <h2>数据证据：国家信用正在向高技术产业倾斜</h2>
+                
+                <h3>01 / 创新基金 — 政府引导基金规模</h3>
+                <p>国家把"耐心资本"铺到早期、成长期和产业化环节。政府引导基金是财政资金进入科技产业的主要股权通道。</p>
+                
+                <div class="highlight-box">
+                    <p><strong>核心数据：</strong></p>
+                    <ul style="margin: 10px 0 0 20px;">
+                        <li>截至 2024 年底，政府引导基金总目标规模约 <strong>12.84 万亿元</strong>，已认缴约 <strong>7.70 万亿元</strong></li>
+                        <li>累计设立 <strong>2,178 只</strong></li>
+                        <li>2024 年新设产业/创投类 <strong>113 只</strong></li>
+                        <li>2024 年新设认缴 <strong>6,510 亿元</strong></li>
+                    </ul>
+                </div>
+                
+                <div class="data-source">
+                    <h4>来源</h4>
+                    <ul>
+                        <li><a href="https://www.cnfin.com/gs-lb/detail/20250226/4192739_1.html" target="_blank">新华财经：引导基金规模</a></li>
+                        <li><a href="https://research.pedaily.cn/202502/546594.shtml" target="_blank">清科：2024 引导基金统计</a></li>
+                        <li><a href="https://www.stats.gov.cn/sj/zxfbhjd/202509/t20250929_1961429.html" target="_blank">国家统计局：R&D 投入</a></li>
+                    </ul>
+                </div>
+                
+                <h3>02 / 企业优惠与资助 — 税费优惠与财政科技支出</h3>
+                <p>全国可比的"资助"，主要体现在税费优惠与财政科技支出。</p>
+                
+                <h4>2024 年数据</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>项目</th>
+                            <th>金额</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>科技创新和制造业减税降费及退税</td>
+                            <td class="metric-highlight">26,293 亿元</td>
+                        </tr>
+                        <tr>
+                            <td>研发费用加计扣除等（支持科技投入和成果转让）</td>
+                            <td><strong>8,069 亿元</strong></td>
+                        </tr>
+                        <tr>
+                            <td>高新企业/新兴产业（含高新企业 15% 所得税等）</td>
+                            <td><strong>4,662 亿元</strong></td>
+                        </tr>
+                        <tr>
+                            <td>财政科学技术支出</td>
+                            <td><strong>12,115 亿元</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="key-point">
+                    <strong>关键政策：</strong>
+                    <ul style="margin: 10px 0 0 20px;">
+                        <li>企业所得税：<strong>25% → 15%</strong>（高新技术企业）</li>
+                        <li>研发费用：<strong>100% 加计扣除</strong></li>
+                    </ul>
+                </div>
+                
+                <div class="data-source">
+                    <h4>来源</h4>
+                    <ul>
+                        <li><a href="https://www.most.gov.cn/kjbgz/202403/t20240313_189961.html" target="_blank">科技部：科技创新税费政策指引</a></li>
+                        <li><a href="https://shanghai.chinatax.gov.cn/xwdt/ztzl/zhl/yhysgj/gzdt/zjdt/202502/t475254.html" target="_blank">税务总局：2024 科技制造税费优惠</a></li>
+                        <li><a href="https://www.stats.gov.cn/sj/zxfbhjd/202509/t20250929_1961429.html" target="_blank">国家统计局：财政科技支出</a></li>
+                    </ul>
+                </div>
+                
+                <h3>03 / IPO 比例 — 上市通道筛选"科技含量"</h3>
+                <p>上市通道正在用板块结构筛选科技含量。用两个代理口径：</p>
+                <ul>
+                    <li><strong>宽口径：</strong>科创板 + 创业板 + 北交所 → 创新型上市通道</li>
+                    <li><strong>窄口径：</strong>科创板 + 创业板 → 科创成长板块</li>
+                </ul>
+                
+                <h4>2025 年 A 股 IPO（共 116 家）</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>板块</th>
+                            <th>家数</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>创业板</td><td>33</td></tr>
+                        <tr><td>北交所</td><td>26</td></tr>
+                        <tr><td>科创板</td><td>19</td></tr>
+                        <tr><td>主板</td><td>38</td></tr>
+                    </tbody>
+                </table>
+                
+                <div class="highlight-box">
+                    <ul style="margin: 0 0 0 20px;">
+                        <li>创新型板块占比（宽口径）：<strong>67%</strong></li>
+                        <li>科创板 + 创业板（窄口径）：<strong>52 家，约 45%</strong></li>
+                    </ul>
+                </div>
+                
+                <div class="data-source">
+                    <h4>来源</h4>
+                    <ul>
+                        <li><a href="https://research.pedaily.cn/202601/559592.shtml" target="_blank">清科：2025 IPO 盘点</a></li>
+                        <li><a href="https://www.sse.com.cn/ipo/listing/" target="_blank">上交所：新股发行一览</a></li>
+                        <li><a href="https://listing.szse.cn/projectdynamic/ipo/index.html" target="_blank">深交所：IPO 项目动态</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 普通人的位置 -->
+            <div class="section">
+                <h2>普通人的位置：为什么越来越难赚钱？</h2>
+                <p>房地产时代，普通人可以通过买房加杠杆，把自己接入中国最大的信用系统。房子上涨，本质上是全社会共同抵押品被重估。</p>
+                <p>但科技产业时代，信用扩张不再天然平均分配。买一只科技股，不等于参与产业升级；在产业链中拥有技术、订单、资本、组织能力，才更接近新的信用核心。</p>
+                
+                <h3>K 型分化</h3>
+                <div class="credit-phase">
+                    <p><strong style="color: #27ae60;">上行一侧：</strong>新的国家信用主体 — 高技术制造、先进产业链、长期资本、全球市场认可</p>
+                </div>
+                <div class="credit-phase" style="background: linear-gradient(135deg, #fdf2f2 0%, #fce4e4 100%); border-color: #e74c3c;">
+                    <p><strong style="color: #e74c3c;">下行一侧：</strong>无法转化为长期现金流、生产率或战略资源承接能力的旧资产和旧模式</p>
+                </div>
+            </div>
+            
+            <!-- 周期变化 -->
+            <div class="section">
+                <h2>周期变化：国家引领能力的周期</h2>
+                <p>传统经济周期更多来自市场自发波动：需求扩张、库存累积、价格下行、再出清。</p>
+                <p>但当财政、产业基金、国资、信贷、人才选拔和上市通道都围绕高技术产业重组时，周期的中心就不再只是"市场冷暖"，而是国家把信用投向哪里。</p>
+                
+                <div class="credit-phase">
+                    <h4>旧周期</h4>
+                    <p>需求回升带来资产普涨，普通人可以通过单一大类资产获得 beta。</p>
+                </div>
+                
+                <div class="credit-phase" style="background: linear-gradient(135deg, #f0f7ff 0%, #e0f0ff 100%); border-color: #2a5298;">
+                    <h4 style="color: #2a5298;">新周期</h4>
+                    <p>国家信用选择方向，财富机会从普遍性机会转向筛选性机会，alpha 更重要。</p>
+                </div>
+            </div>
+            
+            <!-- 结语 -->
+            <div class="section">
+                <h2>结语</h2>
+                <div class="highlight-box" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; border: none;">
+                    <p style="font-size: 1.2em; margin: 0;">未来有信用的，不是有故事的公司，而是能代表中国下一阶段生产率的公司。</p>
+                    <p style="margin: 15px 0 0 0; opacity: 0.9;">新的国家信用，不再主要写在土地价格里，而写在技术路线、产业链位置、财政资源和全球订单里。</p>
+                </div>
+            </div>
         </div>
-      </section>
-
-      <section class="section people-section" id="people">
-        <div class="section-label">普通人的位置</div>
-        <div class="people-grid">
-          <div>
-            <h2>为什么普通人越来越难赚钱？</h2>
-            <p>
-              房地产时代，普通人可以通过买房加杠杆，把自己接入中国最大的信用系统。
-              房子上涨，本质上是全社会共同抵押品被重估。
-            </p>
-            <p>
-              但科技产业时代，信用扩张不再天然平均分配。买一只科技股，不等于参与产业升级；在产业链中拥有技术、订单、资本、组织能力，才更接近新的信用核心。
-            </p>
-          </div>
-          <div class="k-card">
-            <h3>K 型分化</h3>
-            <div class="k-lines">
-              <span class="k-line up"></span>
-              <span class="k-line down"></span>
-            </div>
-            <p>
-              上行的一侧，是新的国家信用主体：高技术制造、先进产业链、长期资本、全球市场认可。
-            </p>
-            <p>
-              下行的一侧，是无法转化为长期现金流、生产率或战略资源承接能力的旧资产和旧模式。
-            </p>
-          </div>
+        
+        <div class="footer">
+            <p>数据来源均以原文链接为准，截至 2026-06-26 整理。部分数据口径说明详见原始网页。</p>
+            <p style="margin-top: 10px; opacity: 0.7;">整理来源：https://helen827.github.io/china-credit-state-credit/</p>
         </div>
-      </section>
-
-      <section class="section cycle-section">
-        <div class="section-label">周期变化</div>
-        <h2>这不是普通经济周期，而是国家引领能力的周期。</h2>
-        <p>
-          传统经济周期更多来自市场自发波动：需求扩张、库存累积、价格下行、再出清。
-          但当财政、产业基金、国资、信贷、人才选拔和上市通道都围绕高技术产业重组时，周期的中心就不再只是“市场冷暖”，而是国家把信用投向哪里。
-        </p>
-        <div class="cycle-compare">
-          <article>
-            <h3>旧周期</h3>
-            <p>需求回升带来资产普涨，普通人可以通过单一大类资产获得 beta。</p>
-          </article>
-          <article>
-            <h3>新周期</h3>
-            <p>国家信用选择方向，财富机会从普遍性机会转向筛选性机会，alpha 更重要。</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="section closing">
-        <p>
-          所以，未来有信用的，不是有故事的公司，而是能代表中国下一阶段生产率的公司。
-          新的国家信用，不再主要写在土地价格里，而写在技术路线、产业链位置、财政资源和全球订单里。
-        </p>
-      </section>
-    </main>
-
-    <footer class="footer">
-      <div>
-        <strong>数据口径与来源</strong>
-        <p>
-          数据用于解释趋势，部分 IPO 指标为按板块归类的代理口径，不等同于监管定义的“高技术企业”。
-        </p>
-      </div>
-      <ul>
-        <li>
-          创新基金：
-          <a href="https://www.cnfin.com/gs-lb/detail/20250226/4192739_1.html" target="_blank" rel="noreferrer">新华财经政府引导基金报道</a>、
-          <a href="https://research.pedaily.cn/202502/546594.shtml" target="_blank" rel="noreferrer">清科 2024 引导基金统计</a>、
-          <a href="https://www.stats.gov.cn/sj/zxfbhjd/202509/t20250929_1961429.html" target="_blank" rel="noreferrer">全国科技经费投入统计公报</a>
-        </li>
-        <li>
-          企业优惠：
-          <a href="https://www.most.gov.cn/kjbgz/202403/t20240313_189961.html" target="_blank" rel="noreferrer">科技部科技创新税费政策指引</a>、
-          <a href="https://shanghai.chinatax.gov.cn/xwdt/ztzl/zhl/yhysgj/gzdt/zjdt/202502/t475254.html" target="_blank" rel="noreferrer">税务总局 2024 税费优惠数据</a>
-        </li>
-        <li>
-          IPO：
-          <a href="https://research.pedaily.cn/202601/559592.shtml" target="_blank" rel="noreferrer">清科 2025 IPO 盘点</a>、
-          <a href="https://www.sse.com.cn/ipo/listing/" target="_blank" rel="noreferrer">上交所新股发行一览</a>、
-          <a href="https://listing.szse.cn/projectdynamic/ipo/index.html" target="_blank" rel="noreferrer">深交所 IPO 项目动态</a>
-        </li>
-      </ul>
-    </footer>
-
-    <script src="./script.js"></script>
-  </body>
+    </div>
+</body>
 </html>
