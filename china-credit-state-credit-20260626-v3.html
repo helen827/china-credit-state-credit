@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国经济的国家信用 - 章总演讲完整版</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-primary: #ede8e0;
+            --bg-secondary: #e2dbd1;
+            --text-primary: #1a1a1a;
+            --text-secondary: #5a5a5a;
+            --accent: #8a8178;
+            --line: #b8b0a4;
+            --highlight: #c62828;
+            --positive: #2e7d32;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow: hidden;
+        }
+        
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+            display: flex;
+            flex-direction: column;
+            padding: 4vh 4vw;
+            background: var(--bg-primary);
+            overflow: hidden;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .nav-dots {
+            position: fixed;
+            right: 2vw;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
+        }
+        
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--line);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-dot.active {
+            background: var(--text-primary);
+            transform: scale(1.3);
+        }
+        
+        .slide-counter {
+            position: fixed;
+            bottom: 3vh;
+            right: 3vw;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            color: var(--accent);
+            letter-spacing: 2px;
+            z-index: 100;
+        }
+        
+        .nav-arrows {
+            position: fixed;
+            bottom: 3vh;
+            left: 3vw;
+            display: flex;
+            gap: 16px;
+            z-index: 100;
+        }
+        
+        .nav-arrow {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--line);
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-arrow:hover {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            line-height: 1.1;
+        }
+        
+        h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); }
+        h2 { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+        h3 { font-size: clamp(1.2rem, 2vw, 1.6rem); }
+        
+        p, li {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+        
+        .label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent);
+            font-weight: 500;
+        }
+        
+        .geo-decoration {
+            position: absolute;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .slide-title {
+            justify-content: center;
+        }
+        
+        .slide-title .content {
+            position: relative;
+            z-index: 1;
+            max-width: 65vw;
+        }
+        
+        .slide-title .label {
+            margin-bottom: 3vh;
+        }
+        
+        .slide-title h1 {
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            margin-bottom: 2vh;
+        }
+        
+        .slide-title .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1rem, 1.5vw, 1.3rem);
+            color: var(--text-secondary);
+            max-width: 40vw;
+        }
+        
+        .slide-title .geo-decoration {
+            right: 5vw;
+            bottom: 10vh;
+            width: 30vw;
+            height: 30vw;
+            opacity: 0.4;
+        }
+        
+        .slide-title .geo-decoration::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            border: 1px dashed var(--line);
+            border-radius: 50%;
+        }
+        
+        .slide-statement {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .slide-statement .content {
+            max-width: 60vw;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .slide-statement .quote-mark {
+            font-family: 'Playfair Display', serif;
+            font-size: 5rem;
+            line-height: 1;
+            color: var(--line);
+            opacity: 0.5;
+            display: block;
+            margin-bottom: 2vh;
+        }
+        
+        .slide-statement h2 {
+            margin-bottom: 3vh;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+        }
+        
+        .slide-statement .attribution {
+            font-size: 0.85rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .slide-agenda .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6vw;
+            align-items: center;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .slide-agenda .left-col h2 {
+            margin-bottom: 3vh;
+        }
+        
+        .slide-agenda .left-col p {
+            max-width: 30vw;
+        }
+        
+        .slide-agenda .agenda-list {
+            list-style: none;
+        }
+        
+        .slide-agenda .agenda-list li {
+            padding: 2vh 0;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: baseline;
+            gap: 2vw;
+        }
+        
+        .slide-agenda .agenda-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--accent);
+            min-width: 3vw;
+        }
+        
+        .slide-credit .content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .slide-credit .header {
+            margin-bottom: 3vh;
+        }
+        
+        .slide-credit .header h2 {
+            margin-bottom: 1vh;
+        }
+        
+        .credit-card {
+            background: rgba(255,255,255,0.3);
+            border: 1px solid var(--line);
+            padding: 3vh 3vw;
+            margin: 1.5vh 0;
+        }
+        
+        .credit-card .gen-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent);
+            margin-bottom: 1vh;
+        }
+        
+        .credit-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1.5vh;
+        }
+        
+        .credit-card p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        
+        .highlight-box {
+            background: rgba(198, 40, 40, 0.08);
+            border-left: 3px solid var(--highlight);
+            padding: 2vh 2vw;
+            margin: 2vh 0;
+        }
+        
+        .highlight-box p {
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+        
+        .slide-twocol .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5vw;
+            align-items: center;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .slide-twocol .left-col h2 {
+            margin-bottom: 2vh;
+        }
+        
+        .slide-twocol .right-col h3 {
+            margin-bottom: 2vh;
+            font-size: 1.3rem;
+        }
+        
+        .slide-twocol .right-col ul {
+            list-style: none;
+        }
+        
+        .slide-twocol .right-col li {
+            padding: 1.5vh 0;
+            border-bottom: 1px solid var(--line);
+            font-size: 0.95rem;
+        }
+        
+        .slide-twocol .right-col li strong {
+            color: var(--text-primary);
+        }
+        
+        .slide-kshape .content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .slide-kshape .header {
+            text-align: center;
+            margin-bottom: 4vh;
+        }
+        
+        .k-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            flex: 1;
+            gap: 4vw;
+        }
+        
+        .k-side {
+            flex: 1;
+            text-align: center;
+            padding: 3vh 2vw;
+        }
+        
+        .k-side.up {
+            border-top: 3px solid var(--positive);
+        }
+        
+        .k-side.down {
+            border-top: 3px solid var(--highlight);
+        }
+        
+        .k-side h3 {
+            margin-bottom: 2vh;
+            font-size: 1.4rem;
+        }
+        
+        .k-side p {
+            font-size: 0.95rem;
+            text-align: left;
+        }
+        
+        .k-arrow {
+            font-size: 3rem;
+            margin: 2vh 0;
+        }
+        
+        .slide-table .content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .slide-table .header {
+            margin-bottom: 3vh;
+        }
+        
+        .slide-table .header h2 {
+            margin-bottom: 1vh;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2vh 0;
+            font-size: 0.9rem;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid var(--line);
+        }
+        
+        .data-table th {
+            background: rgba(138, 129, 120, 0.2);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .data-table tr:hover {
+            background: rgba(138, 129, 120, 0.05);
+        }
+        
+        .data-table .highlight {
+            background: rgba(198, 40, 40, 0.1);
+            font-weight: bold;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 45vh;
+            width: 100%;
+            margin: 2vh 0;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3vw;
+            margin: 3vh 0;
+        }
+        
+        .metric-card {
+            text-align: center;
+            padding: 3vh 2vw;
+            border: 1px solid var(--line);
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .metric-card .number {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            margin-bottom: 1vh;
+        }
+        
+        .metric-card .label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .slide-closing {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .slide-closing .content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .slide-closing h1 {
+            margin-bottom: 3vh;
+        }
+        
+        .slide-closing p {
+            margin-bottom: 4vh;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.9rem;
+        }
+        
+        .slide-closing .geo-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50vw;
+            height: 50vw;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        .slide-closing .geo-ring::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            width: 70%;
+            height: 70%;
+            border: 1px dashed var(--line);
+            border-radius: 50%;
+        }
+        
+        .key-point {
+            background: rgba(138, 129, 120, 0.1);
+            border-left: 3px solid var(--accent);
+            padding: 2vh 2vw;
+            margin: 2vh 0;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+        
+        @media (max-aspect-ratio: 4/3) {
+            .slide-agenda .content,
+            .slide-twocol .content {
+                grid-template-columns: 1fr;
+                gap: 3vh;
+            }
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            .k-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- Slide 1: Title -->
+        <div class="slide slide-title active">
+            <div class="geo-decoration"></div>
+            <div class="content">
+                <div class="label">LP大会演讲 / 2026年6月12日</div>
+                <h1>中国经济的国家信用</h1>
+                <p class="subtitle">章总演讲完整版 —— 信用主体切换与产业趋势分析</p>
+                <div style="margin-top: 4vh; font-size: 0.85rem; color: var(--accent);">
+                    火山石投资
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Core Question -->
+        <div class="slide slide-statement">
+            <div class="content">
+                <span class="quote-mark">"</span>
+                <h2>一个时代最重要的问题，不是"钱从哪里来"，而是：谁的未来可以被相信？</h2>
+                <div class="attribution">核心命题</div>
+            </div>
+            <div class="geo-decoration" style="left: -10vw; top: 10vh; width: 40vw; height: 40vw; opacity: 0.2;"></div>
+        </div>
+
+        <!-- Slide 3: Credit Essence -->
+        <div class="slide slide-statement">
+            <div class="content">
+                <span class="quote-mark">"</span>
+                <h2>信用的本质不是钱，而是对未来的提前确认。</h2>
+                <div class="attribution">信用定义</div>
+            </div>
+            <div class="geo-decoration" style="right: -10vw; bottom: 10vh; width: 40vw; height: 40vw; opacity: 0.2;"></div>
+        </div>
+
+        <!-- Slide 4: Four Generations Overview -->
+        <div class="slide slide-agenda">
+            <div class="content">
+                <div class="left-col">
+                    <div class="label">Overview</div>
+                    <h2>四代信用主体演变</h2>
+                    <p>从国家信用到科技产业信用，中国经济的信用主体经历了四次重大切换。</p>
+                </div>
+                <div class="right-col">
+                    <ul class="agenda-list">
+                        <li><span class="agenda-number">01</span> 第一代：国家信用</li>
+                        <li><span class="agenda-number">02</span> 第二代：外贸企业信用</li>
+                        <li><span class="agenda-number">03</span> 第三代：地方政府与房地产信用</li>
+                        <li><span class="agenda-number">04</span> 第四代：中央财政与科技产业信用</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Generation 1 -->
+        <div class="slide slide-credit">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Generation 01</div>
+                    <h2>第一代：国家信用</h2>
+                </div>
+                <div class="credit-card">
+                    <div class="gen-label">时期</div>
+                    <h3>改革开放前后</h3>
+                    <p>国家掌握资源，国家组织生产，国家定义价值。</p>
+                </div>
+                <div class="highlight-box">
+                    <p><strong>信用主体：</strong>国家资产与计划体系</p>
+                </div>
+                <div class="credit-card">
+                    <p>在计划经济时代，信用完全由国家背书。生产什么、生产多少、价格多少，全部由国家计划决定。企业的信用就是国家的信用，个人的信用也依附于国家分配体系。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Generation 2 -->
+        <div class="slide slide-credit">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Generation 02</div>
+                    <h2>第二代：外贸企业信用</h2>
+                </div>
+                <div class="credit-card">
+                    <div class="gen-label">时期</div>
+                    <h3>加入WTO之后</h3>
+                    <p>谁能获得订单，谁能出口，谁能赚美元，谁就变得有信用。</p>
+                </div>
+                <div class="highlight-box">
+                    <p><strong>核心逻辑：</strong>订单就是信用，美元收入就是抵押品。</p>
+                </div>
+                <div class="credit-card">
+                    <p>温州鞋厂、东莞电子、义乌小商品、绍兴纺织、晋江运动品牌——本质上不是因为它们天生更高级，而是它们<strong>进入了全球需求体系</strong>。</p>
+                    <p style="margin-top: 1vh;">全球市场开始为中国企业提供信用。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Generation 3 -->
+        <div class="slide slide-credit">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Generation 03</div>
+                    <h2>第三代：地方政府与房地产信用</h2>
+                </div>
+                <div class="credit-card">
+                    <div class="gen-label">时期</div>
+                    <h3>2008年之后</h3>
+                    <p>外贸的边际拉动变弱，国内需要新的信用扩张机制。</p>
+                </div>
+                <div class="highlight-box">
+                    <p><strong>信用机器：</strong>地方政府 + 土地 + 银行 + 开发商 + 居民资产负债表</p>
+                </div>
+                <div class="credit-card">
+                    <p>房子不是最大的资产，<strong>房子背后的信用创造能力</strong>才是最大的资产。</p>
+                    <p style="margin-top: 1vh;">房地产成为全社会信用扩张的<strong>共同抵押品</strong>，新的国家信用的体现主体。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Generation 4 -->
+        <div class="slide slide-credit">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Generation 04</div>
+                    <h2>第四代：中央财政与科技产业信用</h2>
+                </div>
+                <div class="credit-card">
+                    <div class="gen-label">核心判断</div>
+                    <h3>房地产退潮的本质是信用主体的切换</h3>
+                </div>
+                <div class="highlight-box">
+                    <p><strong>新信用体系：</strong>中央财政 + 产业政策 + 国有资本 + 科技企业 + 高技术出口 + 长期资本市场</p>
+                </div>
+                <div class="credit-card">
+                    <p>能够被国家、产业资本和全球市场共同认可的科技制造企业。</p>
+                    <p style="margin-top: 1vh;"><strong>未来有信用的，不是有故事的公司，而是能代表中国下一阶段生产率的公司。</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Four Capabilities -->
+        <div class="slide slide-twocol">
+            <div class="content">
+                <div class="left-col">
+                    <div class="label">New Credit System</div>
+                    <h2>新信用主体的<br>四大能力标准</h2>
+                    <p>要成为新的信用主体，必须具备以下四个能力：</p>
+                </div>
+                <div class="right-col">
+                    <ul>
+                        <li><strong>第一</strong> — 能否提高生产率</li>
+                        <li><strong>第二</strong> — 能否形成真实现金流</li>
+                        <li><strong>第三</strong> — 能否承接国家战略资源</li>
+                        <li><strong>第四</strong> — 能否进入全球市场</li>
+                    </ul>
+                    <div class="highlight-box" style="margin-top: 3vh;">
+                        <p>这四点成为新的信用体系的核心评判标准。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: K-shaped Divergence -->
+        <div class="slide slide-kshape">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Wealth Distribution</div>
+                    <h2>K型分化</h2>
+                    <p>从地产信用到产业信用，财富机会的转变</p>
+                </div>
+                <div class="k-container">
+                    <div class="k-side up">
+                        <div class="k-arrow">↗</div>
+                        <h3>新的国家信用主体</h3>
+                        <p>科技制造企业、高技术产业、具备四大能力的公司</p>
+                        <p style="margin-top: 1vh; color: var(--positive);"><strong>↑ 上升</strong></p>
+                    </div>
+                    <div class="k-side down">
+                        <div class="k-arrow">↘</div>
+                        <h3>传统信用主体</h3>
+                        <p>房地产、传统制造业、缺乏技术壁垒的企业</p>
+                        <p style="margin-top: 1vh; color: var(--highlight);"><strong>↓ 下降</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Wealth Opportunity Shift -->
+        <div class="slide slide-credit">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Key Insight</div>
+                    <h2>财富机会的转变</h2>
+                </div>
+                <div class="credit-card">
+                    <h3>房地产时代</h3>
+                    <p>普通人也能参与信用扩张。<strong>买房就是加杠杆</strong>，就是把自己接入了中国最大信用系统。</p>
+                    <p style="margin-top: 1vh;">Beta很大，资产普涨。</p>
+                </div>
+                <div class="credit-card">
+                    <h3>科技产业时代</h3>
+                    <p>普通人很难直接参与。不是买一只科技股就等于参与了产业升级。</p>
+                    <p style="margin-top: 1vh;"><strong>Alpha更重要</strong>，需要筛选能力。</p>
+                </div>
+                <div class="highlight-box">
+                    <p>从地产信用到产业信用，财富机会会从<strong>普遍性机会</strong>变成<strong>筛选性机会</strong>。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Economic Cycle -->
+        <div class="slide slide-credit">
+            <div class="content">
+                <div class="header">
+                    <div class="label">New Understanding</div>
+                    <h2>经济周期的新理解</h2>
+                </div>
+                <div class="credit-card">
+                    <h3>旧逻辑</h3>
+                    <p>经济周期有差有好，会有一个波动周期。经济周期是<strong>市场的产物</strong>。</p>
+                </div>
+                <div class="credit-card">
+                    <h3>新逻辑</h3>
+                    <p>现在不是一个新的经济周期。所有的经济周期都是由<strong>国家总体来调控</strong>的。</p>
+                    <p style="margin-top: 1vh;">现在都是投资高科技，其他投资会减少。这不是自然的、单纯的市场行为，而是<strong>国家意志的体现</strong>。</p>
+                </div>
+                <div class="highlight-box">
+                    <p>现在的核心是考虑<strong>国家作为引领能力的周期</strong>，是一个国家引领的经济周期的统一。</p>
+                    <p style="margin-top: 1vh;">经济周期本来是市场的产物，但现在的经济周期主要是<strong>国家的产物</strong>。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Data Needed -->
+        <div class="slide slide-table">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Data Requirements</div>
+                    <h2>需要补充的数据统计</h2>
+                </div>
+                <div class="credit-card" style="margin: 2vh 0;">
+                    <h3>1. 国家对于创新的基金</h3>
+                    <p>不管是早期还是中期的，目前的投资强度是多少？</p>
+                </div>
+                <div class="credit-card" style="margin: 2vh 0;">
+                    <h3>2. 国家对高新企业的优惠条件和每年的资助</h3>
+                    <p>大概是多少？</p>
+                </div>
+                <div class="credit-card" style="margin: 2vh 0;">
+                    <h3>3. IPO的比例</h3>
+                    <p>现在有多少IPO？其中百分之多少是由高技术产生的？</p>
+                    <p style="margin-top: 1vh;">近三年的情况都会有所表达，高技术的占比一定会越来越多，其他东西想上市就很困难了。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Real Estate Data -->
+        <div class="slide slide-table">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Supporting Data</div>
+                    <h2>房地产信用数据（1998-2021）</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="realestateChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Trade Data -->
+        <div class="slide slide-table">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Supporting Data</div>
+                    <h2>外贸出口与外汇储备（1990-2020）</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="tradeChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: High Tech Data -->
+        <div class="slide slide-table">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Supporting Data</div>
+                    <h2>高技术制造业占比（2015-2024）</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="hightechChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 17: Closing -->
+        <div class="slide slide-closing">
+            <div class="geo-ring"></div>
+            <div class="content">
+                <div class="label">Conclusion</div>
+                <h1>信用主体切换</h1>
+                <p>从房地产到科技产业</p>
+                <div style="margin-top: 4vh; max-width: 55vw; text-align: center;">
+                    <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 2vh;">
+                        未来有信用的，不是有故事的公司，而是能代表中国下一阶段生产率的公司。
+                    </p>
+                    <p style="font-size: 1rem; color: var(--accent);">
+                        新的国家信用，不再主要写在土地价格里，而写在技术路线、产业链位置、财政资源和全球订单里。
+                    </p>
+                </div>
+                <div style="margin-top: 6vh; font-size: 0.85rem; color: var(--accent);">
+                    火山石投资 • 章总 • 2026年6月12日
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-dots">
+        <div class="nav-dot active" data-slide="0"></div>
+        <div class="nav-dot" data-slide="1"></div>
+        <div class="nav-dot" data-slide="2"></div>
+        <div class="nav-dot" data-slide="3"></div>
+        <div class="nav-dot" data-slide="4"></div>
+        <div class="nav-dot" data-slide="5"></div>
+        <div class="nav-dot" data-slide="6"></div>
+        <div class="nav-dot" data-slide="7"></div>
+        <div class="nav-dot" data-slide="8"></div>
+        <div class="nav-dot" data-slide="9"></div>
+        <div class="nav-dot" data-slide="10"></div>
+        <div class="nav-dot" data-slide="11"></div>
+        <div class="nav-dot" data-slide="12"></div>
+        <div class="nav-dot" data-slide="13"></div>
+        <div class="nav-dot" data-slide="14"></div>
+        <div class="nav-dot" data-slide="15"></div>
+        <div class="nav-dot" data-slide="16"></div>
+    </div>
+
+    <div class="nav-arrows">
+        <button class="nav-arrow" id="prevBtn">&#8592;</button>
+        <button class="nav-arrow" id="nextBtn">&#8594;</button>
+    </div>
+
+    <div class="slide-counter">
+        <span id="currentSlide">01</span> / <span id="totalSlides">17</span>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.nav-dot');
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+
+        document.getElementById('totalSlides').textContent = String(totalSlides).padStart(2, '0');
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+            document.getElementById('currentSlide').textContent = String(index + 1).padStart(2, '0');
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            const next = (currentSlide + 1) % totalSlides;
+            showSlide(next);
+        }
+
+        function prevSlide() {
+            const prev = (currentSlide - 1 + totalSlides) % totalSlides;
+            showSlide(prev);
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', nextSlide);
+        document.getElementById('prevBtn').addEventListener('click', prevSlide);
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                showSlide(parseInt(dot.dataset.slide));
+            });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            }
+        });
+
+        // Chart 1: Real Estate
+        const realestateCtx = document.getElementById('realestateChart').getContext('2d');
+        new Chart(realestateCtx, {
+            type: 'line',
+            data: {
+                labels: ['1998', '2000', '2002', '2004', '2006', '2008', '2010', '2012', '2014', '2016', '2018', '2020', '2021'],
+                datasets: [{
+                    label: '房地产业增加值（亿元）',
+                    data: [3866, 4849, 6484, 8942, 12623, 18450, 28669, 37761, 47972, 62066, 77633, 85534, 90398],
+                    borderColor: '#1a1a1a',
+                    backgroundColor: 'rgba(26, 26, 26, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { font: { family: 'Inter', size: 11 }, color: '#5a5a5a' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#e2dbd1', drawBorder: false },
+                        ticks: { font: { family: 'Inter', size: 11 }, color: '#8a8178' }
+                    },
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: { font: { family: 'Inter', size: 11 }, color: '#1a1a1a' }
+                    }
+                }
+            }
+        });
+
+        // Chart 2: Trade & Reserves
+        const tradeCtx = document.getElementById('tradeChart').getContext('2d');
+        new Chart(tradeCtx, {
+            type: 'line',
+            data: {
+                labels: ['1990', '1995', '2000', '2005', '2007', '2010', '2012', '2014', '2016', '2018', '2020'],
+                datasets: [
+                    {
+                        label: '出口额（亿美元）',
+                        data: [621, 1488, 2492, 7620, 12180, 15779, 20489, 23423, 20976, 24874, 25946],
+                        borderColor: '#1a1a1a',
+                        backgroundColor: 'rgba(26, 26, 26, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: '外汇储备（亿美元）',
+                        data: [111, 736, 1656, 8189, 15282, 28473, 33116, 38430, 30105, 30727, 32165],
+                        borderColor: '#8a8178',
+                        backgroundColor: 'rgba(138, 129, 120, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { font: { family: 'Inter', size: 11 }, color: '#5a5a5a' }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: { font: { family: 'Inter', size: 11 }, color: '#1a1a1a' }
+                    },
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        grid: { color: '#e2dbd1', drawBorder: false },
+                        ticks: { font: { family: 'Inter', size: 11 }, color: '#8a8178' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        grid: { display: false },
+                        ticks: { font: { family: 'Inter', size: 11 }, color: '#8a8178' }
+                    }
+                }
+            }
+        });
+
+        // Chart 3: High Tech
+        const hightechCtx = document.getElementById('hightechChart').getContext('2d');
+        new Chart(hightechCtx, {
+            type: 'bar',
+            data: {
+                labels: ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'],
+                datasets: [{
+                    label: '高技术制造业占规上工业比重（%）',
+                    data: [11.8, 12.4, 12.7, 13.3, 14.1, 15.1, 15.7, 15.5, 15.7, 16.3],
+                    backgroundColor: '#1a1a1a',
+                    borderColor: '#1a1a1a',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { font: { family: 'Inter', size: 11 }, color: '#5a5a5a' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 20,
+                        grid: { color: '#e2dbd1', drawBorder: false },
+                        ticks: { font: { family: 'Inter', size: 11 }, color: '#8a8178', callback: v => v + '%' }
+                    },
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: { font: { family: 'Inter', size: 11 }, color: '#1a1a1a' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
