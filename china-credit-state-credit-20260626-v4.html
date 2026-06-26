@@ -695,6 +695,20 @@
             </div>
         </div>
 
+        <!-- Slide 6b: Trade Data -->
+        <div class="slide slide-table">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Supporting Data</div>
+                    <h2>外贸出口与外汇储备（1990-2020）</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="tradeChart"></canvas>
+                </div>
+                <p class="data-source">数据来源：海关总署、国家外汇管理局</p>
+            </div>
+        </div>
+
         <!-- Slide 7: Generation 3 -->
         <div class="slide slide-credit">
             <div class="content">
@@ -717,6 +731,20 @@
             </div>
         </div>
 
+        <!-- Slide 7b: Real Estate Data -->
+        <div class="slide slide-table">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Supporting Data</div>
+                    <h2>房地产信用数据（1998-2021）</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="realestateChart"></canvas>
+                </div>
+                <p class="data-source">数据来源：国家统计局</p>
+            </div>
+        </div>
+
         <!-- Slide 8: Generation 4 -->
         <div class="slide slide-credit">
             <div class="content">
@@ -735,20 +763,113 @@
                     <p>能够被国家、产业资本和全球市场共同认可的科技制造企业。</p>
                     <p style="margin-top: 1vh;"><strong>未来有信用的，不是有故事的公司，而是能代表中国下一阶段生产率的公司。</strong></p>
                 </div>
-                <div style="margin-top: 2vh; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2vw;">
-                    <div class="stat-card" style="padding: 2vh 1vw;">
-                        <div class="stat-number" style="font-size: 2rem;">3.6万亿</div>
-                        <div class="stat-label" style="font-size: 0.75rem;">国家大基金总规模</div>
+            </div>
+        </div>
+
+        <!-- Slide 8b: High Tech Data -->
+        <div class="slide slide-table">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Supporting Data</div>
+                    <h2>高技术制造业占比（2015-2024）</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="hightechChart"></canvas>
+                </div>
+                <p class="data-source">数据来源：国家统计局</p>
+            </div>
+        </div>
+
+        <!-- Slide 8c: Innovation Fund Stats -->
+        <div class="slide slide-table">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Data Point 01</div>
+                    <h2>国家创新基金投资强度</h2>
+                </div>
+                <div class="metrics-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">3.6万亿</div>
+                        <div class="stat-label">国家大基金总规模</div>
+                        <div class="stat-note">大基金一期+二期+三期</div>
                     </div>
-                    <div class="stat-card" style="padding: 2vh 1vw;">
-                        <div class="stat-number" style="font-size: 2rem;">46.3万家</div>
-                        <div class="stat-label" style="font-size: 0.75rem;">高新技术企业</div>
+                    <div class="stat-card">
+                        <div class="stat-number">3440亿</div>
+                        <div class="stat-label">大基金三期规模</div>
+                        <div class="stat-note">2024年5月成立</div>
                     </div>
-                    <div class="stat-card" style="padding: 2vh 1vw;">
-                        <div class="stat-number" style="font-size: 2rem;">~80%</div>
-                        <div class="stat-label" style="font-size: 0.75rem;">IPO为硬科技</div>
+                    <div class="stat-card">
+                        <div class="stat-number">2.64%</div>
+                        <div class="stat-label">2024年研发经费占GDP</div>
+                        <div class="stat-note">连续7年超2%</div>
                     </div>
                 </div>
+                <div class="key-point">
+                    <p><strong>趋势：</strong>国家创新基金投资强度持续加大，大基金三期规模超一期+二期总和，重点投向集成电路、AI、先进制造等"卡脖子"领域。</p>
+                </div>
+                <p class="data-source">数据来源：财政部、国家集成电路产业投资基金公告、国家统计局</p>
+            </div>
+        </div>
+
+        <!-- Slide 8d: High Tech Subsidies -->
+        <div class="slide slide-table">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Data Point 02</div>
+                    <h2>高新技术企业税收优惠与资助</h2>
+                </div>
+                <div class="metrics-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">15%</div>
+                        <div class="stat-label">企业所得税优惠税率</div>
+                        <div class="stat-note">标准税率25%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">研发费用加计扣除</div>
+                        <div class="stat-note">2023年起实施</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">46.3万家</div>
+                        <div class="stat-label">高新技术企业数量</div>
+                        <div class="stat-note">2024年统计</div>
+                    </div>
+                </div>
+                <div class="key-point">
+                    <p><strong>政策力度：</strong>高新技术企业享受15%优惠税率（较标准税率降低10个百分点），研发费用100%加计扣除，集成电路/工业母机企业更可享受120%加计扣除。</p>
+                </div>
+                <p class="data-source">数据来源：国家税务总局、科技部火炬中心</p>
+            </div>
+        </div>
+
+        <!-- Slide 8e: IPO High Tech -->
+        <div class="slide slide-table">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Data Point 03</div>
+                    <h2>IPO高技术企业占比</h2>
+                </div>
+                <div class="metrics-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">100家</div>
+                        <div class="stat-label">2024年A股IPO总数</div>
+                        <div class="stat-note">较2023年313家大幅下降</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">~80%</div>
+                        <div class="stat-label">科创板+创业板占比</div>
+                        <div class="stat-note">科创板15家+创业板38家</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">41.7%</div>
+                        <div class="stat-label">科创板募资占全A比例</div>
+                        <div class="stat-note">2019-2024年累计</div>
+                    </div>
+                </div>
+                <div class="key-point">
+                    <p><strong>趋势：</strong>IPO门槛提高，"硬科技"成为上市主流。科创板聚焦半导体、医药生物、新能源，半导体行业累计募资超2700亿，占科创板总额30%以上。</p>
+                </div>
+                <p class="data-source">数据来源：Wind、上交所、深交所、财联社科创板五周年报告</p>
             </div>
         </div>
 
@@ -845,142 +966,7 @@
             </div>
         </div>
 
-        <!-- Slide 13: Data Stats 1 - Innovation Fund -->
-        <div class="slide slide-table">
-            <div class="content">
-                <div class="header">
-                    <div class="label">Data Point 01</div>
-                    <h2>国家创新基金投资强度</h2>
-                </div>
-                <div class="metrics-grid">
-                    <div class="stat-card">
-                        <div class="stat-number">3.6万亿</div>
-                        <div class="stat-label">国家大基金总规模</div>
-                        <div class="stat-note">大基金一期+二期+三期</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">3440亿</div>
-                        <div class="stat-label">大基金三期规模</div>
-                        <div class="stat-note">2024年5月成立</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">2.64%</div>
-                        <div class="stat-label">2024年研发经费占GDP</div>
-                        <div class="stat-note">连续7年超2%</div>
-                    </div>
-                </div>
-                <div class="key-point">
-                    <p><strong>趋势：</strong>国家创新基金投资强度持续加大，大基金三期规模超一期+二期总和，重点投向集成电路、AI、先进制造等"卡脖子"领域。</p>
-                </div>
-                <p class="data-source">数据来源：财政部、国家集成电路产业投资基金公告、国家统计局</p>
-            </div>
-        </div>
-
-        <!-- Slide 14: Data Stats 2 - High Tech Subsidies -->
-        <div class="slide slide-table">
-            <div class="content">
-                <div class="header">
-                    <div class="label">Data Point 02</div>
-                    <h2>高新技术企业税收优惠与资助</h2>
-                </div>
-                <div class="metrics-grid">
-                    <div class="stat-card">
-                        <div class="stat-number">15%</div>
-                        <div class="stat-label">企业所得税优惠税率</div>
-                        <div class="stat-note">标准税率25%</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">100%</div>
-                        <div class="stat-label">研发费用加计扣除</div>
-                        <div class="stat-note">2023年起实施</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">46.3万家</div>
-                        <div class="stat-label">高新技术企业数量</div>
-                        <div class="stat-note">2024年统计</div>
-                    </div>
-                </div>
-                <div class="key-point">
-                    <p><strong>政策力度：</strong>高新技术企业享受15%优惠税率（较标准税率降低10个百分点），研发费用100%加计扣除，集成电路/工业母机企业更可享受120%加计扣除。</p>
-                </div>
-                <p class="data-source">数据来源：国家税务总局、科技部火炬中心</p>
-            </div>
-        </div>
-
-        <!-- Slide 15: Data Stats 3 - IPO High Tech -->
-        <div class="slide slide-table">
-            <div class="content">
-                <div class="header">
-                    <div class="label">Data Point 03</div>
-                    <h2>IPO高技术企业占比</h2>
-                </div>
-                <div class="metrics-grid">
-                    <div class="stat-card">
-                        <div class="stat-number">100家</div>
-                        <div class="stat-label">2024年A股IPO总数</div>
-                        <div class="stat-note">较2023年313家大幅下降</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">~80%</div>
-                        <div class="stat-label">科创板+创业板占比</div>
-                        <div class="stat-note">科创板15家+创业板38家</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">41.7%</div>
-                        <div class="stat-label">科创板募资占全A比例</div>
-                        <div class="stat-note">2019-2024年累计</div>
-                    </div>
-                </div>
-                <div class="key-point">
-                    <p><strong>趋势：</strong>IPO门槛提高，"硬科技"成为上市主流。科创板聚焦半导体、医药生物、新能源，半导体行业累计募资超2700亿，占科创板总额30%以上。</p>
-                </div>
-                <p class="data-source">数据来源：Wind、上交所、深交所、财联社科创板五周年报告</p>
-            </div>
-        </div>
-
-        <!-- Slide 16: Real Estate Data -->
-        <div class="slide slide-table">
-            <div class="content">
-                <div class="header">
-                    <div class="label">Supporting Data</div>
-                    <h2>房地产信用数据（1998-2021）</h2>
-                </div>
-                <div class="chart-container">
-                    <canvas id="realestateChart"></canvas>
-                </div>
-                <p class="data-source">数据来源：国家统计局</p>
-            </div>
-        </div>
-
-        <!-- Slide 17: Trade Data -->
-        <div class="slide slide-table">
-            <div class="content">
-                <div class="header">
-                    <div class="label">Supporting Data</div>
-                    <h2>外贸出口与外汇储备（1990-2020）</h2>
-                </div>
-                <div class="chart-container">
-                    <canvas id="tradeChart"></canvas>
-                </div>
-                <p class="data-source">数据来源：海关总署、国家外汇管理局</p>
-            </div>
-        </div>
-
-        <!-- Slide 18: High Tech Data -->
-        <div class="slide slide-table">
-            <div class="content">
-                <div class="header">
-                    <div class="label">Supporting Data</div>
-                    <h2>高技术制造业占比（2015-2024）</h2>
-                </div>
-                <div class="chart-container">
-                    <canvas id="hightechChart"></canvas>
-                </div>
-                <p class="data-source">数据来源：国家统计局</p>
-            </div>
-        </div>
-
-        <!-- Slide 19: Closing -->
+        <!-- Slide 13: Closing -->
         <div class="slide slide-closing">
             <div class="geo-ring"></div>
             <div class="content">
@@ -1017,12 +1003,6 @@
         <div class="nav-dot" data-slide="10"></div>
         <div class="nav-dot" data-slide="11"></div>
         <div class="nav-dot" data-slide="12"></div>
-        <div class="nav-dot" data-slide="13"></div>
-        <div class="nav-dot" data-slide="14"></div>
-        <div class="nav-dot" data-slide="15"></div>
-        <div class="nav-dot" data-slide="16"></div>
-        <div class="nav-dot" data-slide="17"></div>
-        <div class="nav-dot" data-slide="18"></div>
     </div>
 
     <div class="nav-arrows">
@@ -1031,7 +1011,7 @@
     </div>
 
     <div class="slide-counter">
-        <span id="currentSlide">01</span> / <span id="totalSlides">19</span>
+        <span id="currentSlide">01</span> / <span id="totalSlides">13</span>
     </div>
 
     <script>
