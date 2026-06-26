@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国经济的国家信用 - 核心数据</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-primary: #ede8e0;
+            --bg-secondary: #e2dbd1;
+            --text-primary: #1a1a1a;
+            --text-secondary: #5a5a5a;
+            --accent: #8a8178;
+            --line: #b8b0a4;
+            --highlight: #c62828;
+            --positive: #2e7d32;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow: hidden;
+        }
+        
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+            display: flex;
+            flex-direction: column;
+            padding: 4vh 4vw;
+            background: var(--bg-primary);
+            overflow: hidden;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Navigation */
+        .nav-dots {
+            position: fixed;
+            right: 2vw;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
+        }
+        
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--line);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-dot.active {
+            background: var(--text-primary);
+            transform: scale(1.3);
+        }
+        
+        .slide-counter {
+            position: fixed;
+            bottom: 3vh;
+            right: 3vw;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            color: var(--accent);
+            letter-spacing: 2px;
+            z-index: 100;
+        }
+        
+        .nav-arrows {
+            position: fixed;
+            bottom: 3vh;
+            left: 3vw;
+            display: flex;
+            gap: 16px;
+            z-index: 100;
+        }
+        
+        .nav-arrow {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--line);
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-arrow:hover {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+        }
+        
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            line-height: 1.1;
+        }
+        
+        h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); }
+        h2 { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+        h3 { font-size: clamp(1.2rem, 2vw, 1.6rem); }
+        
+        p, li {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+        
+        .label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent);
+            font-weight: 500;
+        }
+        
+        /* Geometric decorations */
+        .geo-decoration {
+            position: absolute;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* Slide 1: Title */
+        .slide-title {
+            justify-content: center;
+        }
+        
+        .slide-title .content {
+            position: relative;
+            z-index: 1;
+            max-width: 65vw;
+        }
+        
+        .slide-title .label {
+            margin-bottom: 3vh;
+        }
+        
+        .slide-title h1 {
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            margin-bottom: 2vh;
+        }
+        
+        .slide-title .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1rem, 1.5vw, 1.3rem);
+            color: var(--text-secondary);
+            max-width: 40vw;
+        }
+        
+        .slide-title .geo-decoration {
+            right: 5vw;
+            bottom: 10vh;
+            width: 30vw;
+            height: 30vw;
+            opacity: 0.4;
+        }
+        
+        .slide-title .geo-decoration::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            border: 1px dashed var(--line);
+            border-radius: 50%;
+        }
+        
+        /* Slide 2: Core Statement */
+        .slide-statement {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .slide-statement .content {
+            max-width: 60vw;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .slide-statement .quote-mark {
+            font-family: 'Playfair Display', serif;
+            font-size: 5rem;
+            line-height: 1;
+            color: var(--line);
+            opacity: 0.5;
+            display: block;
+            margin-bottom: 2vh;
+        }
+        
+        .slide-statement h2 {
+            margin-bottom: 3vh;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+        }
+        
+        .slide-statement .attribution {
+            font-size: 0.85rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        /* Slide 3: Agenda */
+        .slide-agenda .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6vw;
+            align-items: center;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .slide-agenda .left-col h2 {
+            margin-bottom: 3vh;
+        }
+        
+        .slide-agenda .left-col p {
+            max-width: 30vw;
+        }
+        
+        .slide-agenda .agenda-list {
+            list-style: none;
+        }
+        
+        .slide-agenda .agenda-list li {
+            padding: 2vh 0;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: baseline;
+            gap: 2vw;
+        }
+        
+        .slide-agenda .agenda-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--accent);
+            min-width: 3vw;
+        }
+        
+        /* Slide 4-6: Table 1 - Real Estate */
+        .slide-table .content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .slide-table .header {
+            margin-bottom: 3vh;
+        }
+        
+        .slide-table .header h2 {
+            margin-bottom: 1vh;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2vh 0;
+            font-size: 0.9rem;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid var(--line);
+        }
+        
+        .data-table th {
+            background: rgba(138, 129, 120, 0.2);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .data-table tr:hover {
+            background: rgba(138, 129, 120, 0.05);
+        }
+        
+        .data-table .highlight {
+            background: rgba(198, 40, 40, 0.1);
+            font-weight: bold;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 45vh;
+            width: 100%;
+            margin: 2vh 0;
+        }
+        
+        /* Slide 7-9: Table 2 - Trade & Reserves */
+        .slide-trade .content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .slide-trade .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 3vh;
+        }
+        
+        /* Slide 10-12: Table 3 - High Tech */
+        .slide-hightech .content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .slide-hightech .header {
+            text-align: center;
+            margin-bottom: 4vh;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3vw;
+            margin: 3vh 0;
+        }
+        
+        .metric-card {
+            text-align: center;
+            padding: 3vh 2vw;
+            border: 1px solid var(--line);
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .metric-card .number {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            margin-bottom: 1vh;
+        }
+        
+        .metric-card .label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Slide 13: Closing */
+        .slide-closing {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .slide-closing .content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .slide-closing h1 {
+            margin-bottom: 3vh;
+        }
+        
+        .slide-closing p {
+            margin-bottom: 4vh;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.9rem;
+        }
+        
+        .slide-closing .geo-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50vw;
+            height: 50vw;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        .slide-closing .geo-ring::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            width: 70%;
+            height: 70%;
+            border: 1px dashed var(--line);
+            border-radius: 50%;
+        }
+        
+        .key-point {
+            background: rgba(138, 129, 120, 0.1);
+            border-left: 3px solid var(--accent);
+            padding: 2vh 2vw;
+            margin: 2vh 0;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+        
+        @media (max-aspect-ratio: 4/3) {
+            .slide-agenda .content {
+                grid-template-columns: 1fr;
+                gap: 3vh;
+            }
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- Slide 1: Title -->
+        <div class="slide slide-title active">
+            <div class="geo-decoration"></div>
+            <div class="content">
+                <div class="label">Research Synthesis / 2026</div>
+                <h1>中国经济的国家信用</h1>
+                <p class="subtitle">房地产历史数据、信用主体切换与科技产业趋势分析</p>
+                <div style="margin-top: 4vh; font-size: 0.85rem; color: var(--accent);">
+                    火山石投资 • 2026年6月
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Core Statement -->
+        <div class="slide slide-statement">
+            <div class="content">
+                <span class="quote-mark">"</span>
+                <h2>房地产退潮，不只是资产价格变化，而是信用主体切换。</h2>
+                <div class="attribution">核心判断</div>
+            </div>
+            <div class="geo-decoration" style="left: -10vw; top: 10vh; width: 40vw; height: 40vw; opacity: 0.2;"></div>
+        </div>
+
+        <!-- Slide 3: Agenda -->
+        <div class="slide slide-agenda">
+            <div class="content">
+                <div class="left-col">
+                    <div class="label">Overview</div>
+                    <h2>三张核心数据表</h2>
+                    <p>从房地产信用到外贸信用，再到高技术产业信用的历史演变与数据验证。</p>
+                </div>
+                <div class="right-col">
+                    <ul class="agenda-list">
+                        <li><span class="agenda-number">01</span> 房地产业增加值（1998-2021）</li>
+                        <li><span class="agenda-number">02</span> 外贸出口与外汇储备（1990-2020）</li>
+                        <li><span class="agenda-number">03</span> 高技术产业GDP占比（2015-2024）</li>
+                        <li><span class="agenda-number">04</span> 信用主体切换总结</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Table 1 - Real Estate Overview -->
+        <div class="slide slide-table">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Table 01</div>
+                    <h2>房地产业增加值（1998-2021）</h2>
+                    <p>单位：亿元 | 数据来源：国家统计局</p>
+                </div>
+                <div class="key-point">
+                    <strong>关键数据：</strong>2019年广义房地产全产业链占GDP比重 <strong>17.2%</strong>，银行贷款中房地产相关占比 <strong>30%-40%</strong>
+                </div>
+                <div class="chart-container">
+                    <canvas id="realestateChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Table 1 - Real Estate Data -->
+        <div class="slide slide-table">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Table 01 — Detailed Data</div>
+                    <h2>房地产业增加值详细数据</h2>
+                </div>
+                <table class="data-table">
+                    <tr>
+                        <th>年份</th>
+                        <th>增加值（亿元）</th>
+                        <th>同比增长</th>
+                        <th>占GDP比重</th>
+                    </tr>
+                    <tr><td>1998</td><td>3,866.50</td><td>-</td><td>4.0%</td></tr>
+                    <tr><td>2000</td><td>4,849.29</td><td>14.9%</td><td>4.5%</td></tr>
+                    <tr><td>2005</td><td>10,341.94</td><td>15.7%</td><td>5.8%</td></tr>
+                    <tr><td>2008</td><td>18,449.50</td><td>9.8%</td><td>6.1%</td></tr>
+                    <tr><td>2010</td><td>28,668.71</td><td>23.4%</td><td>7.1%</td></tr>
+                    <tr><td>2015</td><td>53,732.27</td><td>12.0%</td><td>7.8%</td></tr>
+                    <tr><td>2018</td><td>77,632.93</td><td>12.1%</td><td>8.6%</td></tr>
+                    <tr class="highlight"><td>2021</td><td><strong>90,397.50</strong></td><td>5.7%</td><td><strong>7.9%</strong></td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Slide 6: Table 1 - Real Estate Key Metrics -->
+        <div class="slide slide-table">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Table 01 — Key Metrics</div>
+                    <h2>房地产行业核心指标</h2>
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="number">23.4倍</div>
+                        <div class="label">23年增长倍数</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="number">17.2%</div>
+                        <div class="label">广义产业链占GDP</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="number">30-40%</div>
+                        <div class="label">银行贷款占比</div>
+                    </div>
+                </div>
+                <div class="key-point" style="margin-top: 4vh;">
+                    房地产板块市值占A股比例从2015-2018年的 <strong>10-15%</strong> 下降至2024-2025年的 <strong>3-5%</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Table 2 - Trade Overview -->
+        <div class="slide slide-trade">
+            <div class="content">
+                <div class="header">
+                    <div>
+                        <div class="label">Table 02</div>
+                        <h2>外贸出口与外汇储备增长</h2>
+                    </div>
+                    <p style="max-width: 25vw; text-align: right;">1990-2020年 | 单位：亿美元</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="tradeChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Table 2 - Trade Data -->
+        <div class="slide slide-trade">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Table 02 — Detailed Data</div>
+                    <h2>外贸与外汇储备详细数据</h2>
+                </div>
+                <table class="data-table">
+                    <tr>
+                        <th>年份</th>
+                        <th>出口额（亿美元）</th>
+                        <th>外汇储备（亿美元）</th>
+                        <th>外汇储备增速</th>
+                    </tr>
+                    <tr><td>1990</td><td>621</td><td>111</td><td>-</td></tr>
+                    <tr><td>1995</td><td>1,488</td><td>736</td><td>563%</td></tr>
+                    <tr><td>2000</td><td>2,492</td><td>1,656</td><td>125%</td></tr>
+                    <tr><td>2005</td><td>7,620</td><td>8,189</td><td>34%</td></tr>
+                    <tr class="highlight"><td>2007</td><td>12,180</td><td>15,282</td><td>43%</td></tr>
+                    <tr><td>2010</td><td>15,779</td><td>28,473</td><td>19%</td></tr>
+                    <tr class="highlight"><td>2014</td><td>23,423</td><td>38,430</td><td>1%</td></tr>
+                    <tr><td>2020</td><td>25,946</td><td>32,165</td><td>3%</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Slide 9: Table 2 - Trade Key Metrics -->
+        <div class="slide slide-trade">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Table 02 — Key Metrics</div>
+                    <h2>外贸与外汇储备核心指标</h2>
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="number">41.8倍</div>
+                        <div class="label">出口增长倍数</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="number">3.99万亿</div>
+                        <div class="label">外储峰值（美元）</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="number">2001</div>
+                        <div class="label">WTO关键节点</div>
+                    </div>
+                </div>
+                <div class="key-point" style="margin-top: 4vh;">
+                    2001年加入WTO后出口爆发式增长，2006年外汇储备首次突破1万亿美元，<strong>超越日本成为全球第一</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Table 3 - High Tech Overview -->
+        <div class="slide slide-hightech">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Table 03</div>
+                    <h2>高技术产业GDP占比与高端制造出口</h2>
+                    <p>数据来源：国家统计局、海关总署、科技部</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="hightechChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Table 3 - High Tech Data -->
+        <div class="slide slide-hightech">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Table 03 — Detailed Data</div>
+                    <h2>高技术制造业占比变化</h2>
+                </div>
+                <table class="data-table">
+                    <tr>
+                        <th>年份</th>
+                        <th>高技术制造业增加值增速</th>
+                        <th>占规上工业比重</th>
+                        <th>高技术产品出口占比</th>
+                    </tr>
+                    <tr><td>2015</td><td>10.2%</td><td>11.8%</td><td>29.4%</td></tr>
+                    <tr><td>2016</td><td>10.8%</td><td>12.4%</td><td>29.5%</td></tr>
+                    <tr><td>2017</td><td>13.4%</td><td>12.7%</td><td>30.2%</td></tr>
+                    <tr><td>2018</td><td>11.7%</td><td>13.3%</td><td>30.7%</td></tr>
+                    <tr><td>2019</td><td>8.8%</td><td>14.1%</td><td>29.8%</td></tr>
+                    <tr><td>2020</td><td>7.1%</td><td>15.1%</td><td>30.6%</td></tr>
+                    <tr><td>2021</td><td>18.2%</td><td>15.7%</td><td>29.0%</td></tr>
+                    <tr><td>2022</td><td>7.4%</td><td>15.5%</td><td>27.6%</td></tr>
+                    <tr><td>2023</td><td>2.7%</td><td>15.7%</td><td>27.3%</td></tr>
+                    <tr class="highlight"><td>2024</td><td><strong>8.9%</strong></td><td><strong>16.3%</strong></td><td><strong>18.2%</strong></td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Slide 12: Table 3 - New Three Items -->
+        <div class="slide slide-hightech">
+            <div class="content">
+                <div class="header">
+                    <div class="label">Table 03 — Export Highlights</div>
+                    <h2>高端制造出口"新三样"</h2>
+                </div>
+                <table class="data-table">
+                    <tr>
+                        <th>产品类别</th>
+                        <th>2024年出口额</th>
+                        <th>同比增长</th>
+                    </tr>
+                    <tr><td>电动汽车</td><td>约5,800亿元</td><td style="color: var(--positive); font-weight: bold;">+38%</td></tr>
+                    <tr><td>锂电池</td><td>约4,500亿元</td><td style="color: var(--positive); font-weight: bold;">+18%</td></tr>
+                    <tr><td>太阳能电池</td><td>约3,200亿元</td><td style="color: var(--positive); font-weight: bold;">+23%</td></tr>
+                    <tr class="highlight"><td><strong>"新三样"合计</strong></td><td><strong>约13,500亿元</strong></td><td style="color: var(--positive); font-weight: bold;"><strong>+27%</strong></td></tr>
+                </table>
+                <div class="metrics-grid" style="margin-top: 4vh;">
+                    <div class="metric-card">
+                        <div class="number">16.3%</div>
+                        <div class="label">高技术制造占比</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="number">42%</div>
+                        <div class="label">数字经济占GDP</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="number">2.64%</div>
+                        <div class="label">研发投入强度</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Closing -->
+        <div class="slide slide-closing">
+            <div class="geo-ring"></div>
+            <div class="content">
+                <div class="label">Conclusion</div>
+                <h1>信用主体切换</h1>
+                <p>从房地产到高技术产业</p>
+                <div style="margin-top: 4vh; max-width: 50vw; text-align: center;">
+                    <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 2vh;">
+                        未来有信用的，不是有故事的公司，而是能代表中国下一阶段生产率的公司。
+                    </p>
+                    <p style="font-size: 1rem; color: var(--accent);">
+                        新的国家信用，不再主要写在土地价格里，而写在技术路线、产业链位置、财政资源和全球订单里。
+                    </p>
+                </div>
+                <div style="margin-top: 6vh; font-size: 0.85rem; color: var(--accent);">
+                    火山石投资 • 2026年6月
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-dots">
+        <div class="nav-dot active" data-slide="0"></div>
+        <div class="nav-dot" data-slide="1"></div>
+        <div class="nav-dot" data-slide="2"></div>
+        <div class="nav-dot" data-slide="3"></div>
+        <div class="nav-dot" data-slide="4"></div>
+        <div class="nav-dot" data-slide="5"></div>
+        <div class="nav-dot" data-slide="6"></div>
+        <div class="nav-dot" data-slide="7"></div>
+        <div class="nav-dot" data-slide="8"></div>
+        <div class="nav-dot" data-slide="9"></div>
+        <div class="nav-dot" data-slide="10"></div>
+        <div class="nav-dot" data-slide="11"></div>
+        <div class="nav-dot" data-slide="12"></div>
+    </div>
+
+    <div class="nav-arrows">
+        <button class="nav-arrow" id="prevBtn">&#8592;</button>
+        <button class="nav-arrow" id="nextBtn">&#8594;</button>
+    </div>
+
+    <div class="slide-counter">
+        <span id="currentSlide">01</span> / <span id="totalSlides">13</span>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.nav-dot');
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+
+        document.getElementById('totalSlides').textContent = String(totalSlides).padStart(2, '0');
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+            document.getElementById('currentSlide').textContent = String(index + 1).padStart(2, '0');
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            const next = (currentSlide + 1) % totalSlides;
+            showSlide(next);
+        }
+
+        function prevSlide() {
+            const prev = (currentSlide - 1 + totalSlides) % totalSlides;
+            showSlide(prev);
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', nextSlide);
+        document.getElementById('prevBtn').addEventListener('click', prevSlide);
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                showSlide(parseInt(dot.dataset.slide));
+            });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            }
+        });
+
+        // Chart 1: Real Estate
+        const realestateCtx = document.getElementById('realestateChart').getContext('2d');
+        new Chart(realestateCtx, {
+            type: 'line',
+            data: {
+                labels: ['1998', '2000', '2002', '2004', '2006', '2008', '2010', '2012', '2014', '2016', '2018', '2020', '2021'],
+                datasets: [{
+                    label: '房地产业增加值（亿元）',
+                    data: [3866, 4849, 6484, 8942, 12623, 18450, 28669, 37761, 47972, 62066, 77633, 85534, 90398],
+                    borderColor: '#1a1a1a',
+                    backgroundColor: 'rgba(26, 26, 26, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { font: { family: 'Inter', size: 11 }, color: '#5a5a5a' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#e2dbd1', drawBorder: false },
+                        ticks: { font: { family: 'Inter', size: 11 }, color: '#8a8178' }
+                    },
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: { font: { family: 'Inter', size: 11 }, color: '#1a1a1a' }
+                    }
+                }
+            }
+        });
+
+        // Chart 2: Trade & Reserves
+        const tradeCtx = document.getElementById('tradeChart').getContext('2d');
+        new Chart(tradeCtx, {
+            type: 'line',
+            data: {
+                labels: ['1990', '1995', '2000', '2005', '2007', '2010', '2012', '2014', '2016', '2018', '2020'],
+                datasets: [
+                    {
+                        label: '出口额（亿美元）',
+                        data: [621, 1488, 2492, 7620, 12180, 15779, 20489, 23423, 20976, 24874, 25946],
+                        borderColor: '#1a1a1a',
+                        backgroundColor: 'rgba(26, 26, 26, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: '外汇储备（亿美元）',
+                        data: [111, 736, 1656, 8189, 15282, 28473, 33116, 38430, 30105, 30727, 32165],
+                        borderColor: '#8a8178',
+                        backgroundColor: 'rgba(138, 129, 120, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { font: { family: 'Inter', size: 11 }, color: '#5a5a5a' }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: { font: { family: 'Inter', size: 11 }, color: '#1a1a1a' }
+                    },
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        grid: { color: '#e2dbd1', drawBorder: false },
+                        ticks: { font: { family: 'Inter', size: 11 }, color: '#8a8178' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        grid: { display: false },
+                        ticks: { font: { family: 'Inter', size: 11 }, color: '#8a8178' }
+                    }
+                }
+            }
+        });
+
+        // Chart 3: High Tech
+        const hightechCtx = document.getElementById('hightechChart').getContext('2d');
+        new Chart(hightechCtx, {
+            type: 'bar',
+            data: {
+                labels: ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'],
+                datasets: [{
+                    label: '高技术制造业占规上工业比重（%）',
+                    data: [11.8, 12.4, 12.7, 13.3, 14.1, 15.1, 15.7, 15.5, 15.7, 16.3],
+                    backgroundColor: '#1a1a1a',
+                    borderColor: '#1a1a1a',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { font: { family: 'Inter', size: 11 }, color: '#5a5a5a' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 20,
+                        grid: { color: '#e2dbd1', drawBorder: false },
+                        ticks: { font: { family: 'Inter', size: 11 }, color: '#8a8178', callback: v => v + '%' }
+                    },
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: { font: { family: 'Inter', size: 11 }, color: '#1a1a1a' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
