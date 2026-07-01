@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国经济的国家信用</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+        
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .header .meta {
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+
+        /* ===== 编辑工具栏 ===== */
+        .edit-toolbar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.95);
+            padding: 10px 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .edit-toolbar button {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            font-weight: 500;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+        }
+
+        .btn-edit.active {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .btn-annotate {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+        }
+
+        .btn-annotate:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(243,156,18,0.4);
+        }
+
+        .btn-annotate.active {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(39,174,96,0.4);
+        }
+
+        .btn-export {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+        }
+
+        .btn-export:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(52,152,219,0.4);
+        }
+
+        /* 编辑模式样式 */
+        body.editing [contenteditable="true"] {
+            outline: 2px dashed #667eea;
+            outline-offset: 4px;
+            border-radius: 4px;
+            background: rgba(102,126,234,0.03);
+        }
+
+        body.editing [contenteditable="true"]:hover {
+            outline: 2px solid #667eea;
+            background: rgba(102,126,234,0.06);
+        }
+
+        body.editing [contenteditable="true"]:focus {
+            outline: 2px solid #764ba2;
+            background: rgba(102,126,234,0.08);
+        }
+
+        /* 批注样式 */
+        .annotation {
+            position: relative;
+            display: inline;
+            background: linear-gradient(180deg, transparent 60%, rgba(243,156,18,0.3) 60%);
+            cursor: pointer;
+        }
+
+        .annotation::after {
+            content: attr(data-note);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            white-space: nowrap;
+            z-index: 1000;
+            transition: transform 0.2s;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .annotation:hover::after {
+            transform: translateX(-50%) scale(1);
+        }
+
+        .annotation-popup {
+            position: fixed;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            padding: 16px;
+            z-index: 10001;
+            min-width: 250px;
+            display: none;
+        }
+
+        .annotation-popup textarea {
+            width: 100%;
+            min-height: 80px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+
+        .annotation-popup .popup-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .annotation-popup button {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .popup-save {
+            background: #27ae60;
+            color: white;
+        }
+
+        .popup-cancel {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .popup-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        /* 批注侧边栏 */
+        .annotation-sidebar {
+            position: fixed;
+            right: -350px;
+            top: 0;
+            width: 350px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+            z-index: 9999;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            padding: 80px 20px 20px;
+        }
+
+        .annotation-sidebar.open {
+            right: 0;
+        }
+
+        .annotation-sidebar h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f39c12;
+        }
+
+        .annotation-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid #f39c12;
+        }
+
+        .annotation-item .anno-text {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 6px;
+            font-style: italic;
+        }
+
+        .annotation-item .anno-note {
+            font-size: 13px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .annotation-item .anno-time {
+            font-size: 11px;
+            color: #999;
+            margin-top: 6px;
+        }
+
+        .sidebar-toggle {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            z-index: 9998;
+            box-shadow: 0 4px 15px rgba(243,156,18,0.4);
+            transition: all 0.2s;
+        }
+
+        .sidebar-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .sidebar-toggle .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .sidebar-toggle .badge.show {
+            display: block;
+        }
+        
+        .content {
+            padding: 50px 40px;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+        }
+        
+        .section h2 {
+            font-size: 1.8em;
+            color: #1e3c72;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .section h3 {
+            font-size: 1.4em;
+            color: #2a5298;
+            margin: 30px 0 15px 0;
+        }
+        
+        .section h4 {
+            font-size: 1.2em;
+            color: #444;
+            margin: 25px 0 12px 0;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-left: 5px solid #667eea;
+            padding: 25px 30px;
+            margin: 25px 0;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .highlight-box p {
+            margin: 0;
+            font-size: 1.1em;
+            color: #1e3c72;
+            font-weight: 500;
+        }
+        
+        .key-point {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px 25px;
+            margin: 20px 0;
+        }
+        
+        .key-point strong {
+            color: #856404;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+        
+        th, td {
+            padding: 14px 18px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9ff;
+        }
+        
+        tbody tr:nth-child(even) {
+            background: #fafbfc;
+        }
+        
+        tbody tr:nth-child(even):hover {
+            background: #f0f2ff;
+        }
+        
+        ul, ol {
+            margin: 15px 0 15px 25px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        a:hover {
+            border-bottom-color: #667eea;
+        }
+        
+        .credit-phase {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            border-radius: 15px;
+            padding: 25px 30px;
+            margin: 20px 0;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .credit-phase h4 {
+            color: #1e3c72;
+            margin-top: 0;
+        }
+        
+        .comparison-table {
+            margin: 25px 0;
+        }
+        
+        .comparison-table th {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 30px 40px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin: 5px;
+            font-weight: 500;
+        }
+        
+        .data-source {
+            background: #f0f4f8;
+            border-radius: 10px;
+            padding: 20px 25px;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        
+        .data-source h4 {
+            margin-top: 0;
+            color: #1e3c72;
+        }
+        
+        .data-source ul {
+            margin: 10px 0 0 20px;
+        }
+        
+        .data-source li {
+            margin: 5px 0;
+        }
+        
+        blockquote {
+            background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+            border-left: 5px solid #667eea;
+            padding: 20px 25px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+            font-style: italic;
+            color: #555;
+        }
+        
+        .metric-highlight {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #e74c3c;
+        }
+        
+        .positive {
+            color: #27ae60;
+        }
+        
+        .negative {
+            color: #e74c3c;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 10px;
+            }
+            
+            .header {
+                padding: 40px 25px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content {
+                padding: 30px 25px;
+            }
+            
+            table {
+                font-size: 0.85em;
+            }
+            
+            th, td {
+                padding: 10px 12px;
+            }
+
+            .edit-toolbar {
+                top: 10px;
+                right: 10px;
+                padding: 8px 10px;
+                gap: 5px;
+            }
+
+            .edit-toolbar button {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            .annotation-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 编辑工具栏 -->
+    <div class="edit-toolbar">
+        <button class="btn-edit" id="btnEdit" onclick="toggleEdit()">✏️ 编辑</button>
+        <button class="btn-annotate" id="btnAnnotate" onclick="toggleAnnotate()">💬 批注</button>
+        <button class="btn-save" onclick="saveContent()">💾 保存</button>
+        <button class="btn-export" onclick="exportHTML()">📥 导出</button>
+    </div>
+
+    <!-- 批注弹窗 -->
+    <div class="annotation-popup" id="annotationPopup">
+        <textarea id="annotationInput" placeholder="输入批注内容..."></textarea>
+        <div class="popup-actions">
+            <button class="popup-delete" onclick="deleteAnnotation()">删除</button>
+            <button class="popup-cancel" onclick="closeAnnotationPopup()">取消</button>
+            <button class="popup-save" onclick="saveAnnotation()">保存</button>
+        </div>
+    </div>
+
+    <!-- 批注侧边栏 -->
+    <div class="annotation-sidebar" id="annotationSidebar">
+        <h3>📋 批注列表</h3>
+        <div id="annotationList"></div>
+    </div>
+
+    <!-- 批注侧边栏切换按钮 -->
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+        💬
+        <span class="badge" id="annotationBadge">0</span>
+    </button>
+
+    <div class="container">
+        <div class="header">
+            <h1 contenteditable="false">中国经济的国家信用</h1>
+            <div class="subtitle" contenteditable="false">房地产退潮，不只是资产价格变化，而是信用主体切换</div>
+            <div class="meta" contenteditable="false">来源：https://helen827.github.io/china-credit-state-credit/ | 整理时间：2026-06-26</div>
+        </div>
+        
+        <div class="content">
+            <!-- 核心判断 -->
+            <div class="section">
+                <h2 contenteditable="false">核心判断</h2>
+                <div class="highlight-box" contenteditable="false">
+                    <p>房地产退潮，不只是资产价格变化，而是信用主体切换。</p>
+                </div>
+                <p contenteditable="false">当一个主体能够被国家、银行、居民、资本市场和全球买家共同相信，它就会成为信用扩张的核心抵押品。房地产时代，抵押品是土地和房子；科技产业时代，抵押品正在变成先进制造能力、真实现金流、高技术出口和长期资本市场认可。</p>
+            </div>
+            
+            <!-- 四次迁移 -->
+            <div class="section">
+                <h2 contenteditable="false">中国经济信用体系的四次迁移</h2>
+                <p contenteditable="false">每一代信用主体，都是当时最能把"未来"变成"今天可融资能力"的系统。</p>
+                
+                <div class="credit-phase" contenteditable="false">
+                    <h4>01 — 国家信用</h4>
+                    <ul>
+                        <li><strong>时期：</strong>改革开放前后</li>
+                        <li><strong>机制：</strong>国家掌握资源、组织生产、定义价值</li>
+                        <li><strong>抵押品：</strong>国家资产与计划体系</li>
+                    </ul>
+                </div>
+                
+                <div class="credit-phase" contenteditable="false">
+                    <h4>02 — 外贸企业信用</h4>
+                    <ul>
+                        <li><strong>时期：</strong>加入 WTO 后</li>
+                        <li><strong>机制：</strong>订单、出口能力和美元收入成为企业信用来源</li>
+                        <li><strong>抵押品：</strong>出口企业与全球订单</li>
+                    </ul>
+                </div>
+                
+                <div class="credit-phase" contenteditable="false">
+                    <h4>03 — 地方政府与房地产信用</h4>
+                    <ul>
+                        <li><strong>时期：</strong>2008 年后</li>
+                        <li><strong>机制：</strong>土地、按揭、城投平台和居民资产负债表形成信用机器</li>
+                        <li><strong>抵押品：</strong>地方政府与房地产资产负债表</li>
+                    </ul>
+                </div>
+                
+                <h3 contenteditable="false">附：房地产行业完整数据</h3>
+                
+                <h4 contenteditable="false">中国房地产从几几年开始？</h4>
+                <p contenteditable="false">中国房地产行业经历了三个关键阶段，真正市场化起步是 <strong>1998年</strong>：</p>
+                
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>阶段</th>
+                            <th>时间</th>
+                            <th>关键事件</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>探索试点阶段</td>
+                            <td>1978-1988年</td>
+                            <td>1980年邓小平提出住房商品化；1982年"三三制"补贴售房试点</td>
+                        </tr>
+                        <tr>
+                            <td>逐步推开阶段</td>
+                            <td>1988-1998年</td>
+                            <td>1988年第一次全国房改会议；1994年《深化城镇住房制度改革决定》</td>
+                        </tr>
+                        <tr>
+                            <td><strong>全面市场化阶段</strong></td>
+                            <td><strong>1998年至今</strong></td>
+                            <td><strong>1998年7月3日国务院"23号令"停止福利分房，实行住房分配货币化</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="key-point" contenteditable="false">
+                    <strong>关键结论：</strong>中国房地产真正商品化、市场化是从<strong>1998年</strong>开始的，但房改源头可追溯至1978年邓小平关于住房问题的讲话。
+                </div>
+                
+                <h4 contenteditable="false">A股房地产板块市值变化</h4>
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>指标</th>
+                            <th>数据</th>
+                            <th>来源</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>房地产行业指数自2021年初累计跌幅</td>
+                            <td class="negative"><strong>-44.61%</strong></td>
+                            <td>中国财富研究院，2026年5月</td>
+                        </tr>
+                        <tr>
+                            <td>跑输沪深300幅度</td>
+                            <td class="negative"><strong>-37.48个百分点</strong></td>
+                            <td>同上</td>
+                        </tr>
+                        <tr>
+                            <td>2025年行业市值管理得分</td>
+                            <td><strong>48.93分</strong>（低于A股均值49.16分）</td>
+                            <td>同上</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4 contenteditable="false">全国房地产销售数据</h4>
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>年份</th>
+                            <th>新建商品房销售面积</th>
+                            <th>销售金额</th>
+                            <th>同比变化</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2024年</td>
+                            <td>97,385万㎡</td>
+                            <td>96,750亿元</td>
+                            <td class="negative">面积-12.9%，金额-17.1%</td>
+                        </tr>
+                        <tr>
+                            <td>历史高点（约2021年）</td>
+                            <td>约179,400万㎡</td>
+                            <td>约181,900亿元</td>
+                            <td>—</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <blockquote contenteditable="false">
+                    2024年销售面积回落至<strong>2009年水平</strong>，销售金额回到<strong>2015-2016年水平</strong>。
+                </blockquote>
+                
+                <h4 contenteditable="false">主要房企市值变化（万科 vs 保利）</h4>
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>时间节点</th>
+                            <th>万科A市值</th>
+                            <th>保利发展市值</th>
+                            <th>备注</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2016年8月（宝能事件后）</td>
+                            <td class="metric-highlight">2,578亿</td>
+                            <td>875亿</td>
+                            <td>万科是保利的2.95倍</td>
+                        </tr>
+                        <tr>
+                            <td>2022年3月11日</td>
+                            <td>1,936亿</td>
+                            <td class="metric-highlight">1,943亿</td>
+                            <td><strong>保利首次反超万科</strong>，成为A股房企市值一哥</td>
+                        </tr>
+                        <tr>
+                            <td>2024-2025年</td>
+                            <td class="negative">持续下滑</td>
+                            <td class="positive">相对抗跌</td>
+                            <td>行业深度调整</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4 contenteditable="false">2025年房地产上市公司综合实力TOP10</h4>
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>排名</th>
+                            <th>企业名称</th>
+                            <th>性质</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>华润置地</td><td><span class="tag">央企</span></td></tr>
+                        <tr><td>2</td><td>保利发展</td><td><span class="tag">央企</span></td></tr>
+                        <tr><td>3</td><td>中国海外发展</td><td><span class="tag">央企</span></td></tr>
+                        <tr><td>4</td><td>招商蛇口</td><td><span class="tag">央企</span></td></tr>
+                        <tr><td>5</td><td>龙湖集团</td><td><span class="tag" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);">民营</span></td></tr>
+                        <tr><td>6</td><td>绿城中国</td><td><span class="tag" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);">混合所有制</span></td></tr>
+                        <tr><td>7</td><td>万科A</td><td><span class="tag" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);">地方国企</span></td></tr>
+                        <tr><td>8</td><td>越秀地产</td><td><span class="tag" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);">地方国企</span></td></tr>
+                        <tr><td>9</td><td>华发股份</td><td><span class="tag" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);">地方国企</span></td></tr>
+                        <tr><td>10</td><td>新城控股</td><td><span class="tag" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);">民营</span></td></tr>
+                    </tbody>
+                </table>
+                
+                <h4 contenteditable="false">市值变化核心趋势</h4>
+                <ul contenteditable="false">
+                    <li><strong>2015-2021年：</strong>黄金末期，万科市值一度超过2500亿</li>
+                    <li><strong>2021-2025年：</strong>深度调整，行业指数累计下跌44.61%，民营房企大面积出险</li>
+                    <li><strong>估值逻辑重塑：</strong>从"规模扩张"转向"现金流稳定性+资产运营能力"，央企/国企房企市值相对抗跌</li>
+                </ul>
+                
+                <div class="data-source" contenteditable="false">
+                    <h4>数据来源</h4>
+                    <ul>
+                        <li><a href="http://paper.people.com.cn/zgjjzk/html/2018-12/24/content_1901586.htm" target="_blank">中国房改历程（人民网）</a></li>
+                        <li><a href="https://m.jiemian.com/article/3526210.html" target="_blank">中国房改回眸1998（界面新闻）</a></li>
+                        <li><a href="http://www.fangchan.com/industry/23/2025-05-22/7330856518818271608.html" target="_blank">2025房地产上市公司测评（中房网）</a></li>
+                        <li><a href="https://wap.eastmoney.com/a/202606173774486673.html" target="_blank">2025市值管理成效盘点（东方财富）</a></li>
+                        <li><a href="https://www.stcn.com/stock/gsdt/202203/t20220312_4233552.html" target="_blank">保利反超万科（证券时报）</a></li>
+                    </ul>
+                </div>
+                
+                <div class="credit-phase" contenteditable="false">
+                    <h4>04 — 中央财政与科技产业信用</h4>
+                    <ul>
+                        <li><strong>时期：</strong>当前</li>
+                        <li><strong>机制：</strong>新信用主体转向能提升生产率、承接战略资源、进入全球市场的科技制造企业</li>
+                        <li><strong>抵押品：</strong>中央财政与高技术产业链</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 日本对照 -->
+            <div class="section">
+                <h2 contenteditable="false">对照：日本——房市是股市信心的底层来源</h2>
+                
+                <div class="highlight-box" contenteditable="false">
+                    <p>日本提供了一个重要参照：<strong>房价上涨不是股市的副产品，而是股市信心的底层来源。</strong></p>
+                </div>
+                
+                <h3 contenteditable="false">日本房价最近一直在涨</h3>
+                <p contenteditable="false">从2020年开始，日本全境特别是大城市的房地产价格持续走高，东京、大阪的房价以年均15%-30%的涨幅冲向历史高点。</p>
+                
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>指标</th>
+                            <th>数据</th>
+                            <th>时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>东京23区新建公寓均价</td>
+                            <td class="metric-highlight">1.3309亿日元（约624.79万元人民币）</td>
+                            <td>2025年4-9月，同比+20.4%</td>
+                        </tr>
+                        <tr>
+                            <td>东京23区二手房均价</td>
+                            <td class="metric-highlight">每70㎡ 1.1034亿日元（约515.05万元人民币）</td>
+                            <td>2025年9月，首次突破1.1亿日元</td>
+                        </tr>
+                        <tr>
+                            <td>东京住宅价格指数（2020年10月=100）</td>
+                            <td><strong>107.3</strong></td>
+                            <td>2024年4月，连续5次上涨，涨幅1.5%创历史新高</td>
+                        </tr>
+                        <tr>
+                            <td>大阪住宅价格指数（2020年10月=100）</td>
+                            <td><strong>116.6</strong></td>
+                            <td>2024年4月，涨幅同样创新高</td>
+                        </tr>
+                        <tr>
+                            <td>东京23区中古公寓年增率</td>
+                            <td class="metric-highlight">28.3%</td>
+                            <td>2025年4月，数据收集以来最高增长率</td>
+                        </tr>
+                        <tr>
+                            <td>东京23区租金同比涨幅</td>
+                            <td><strong>6.7%</strong></td>
+                            <td>2025年，2019年以来最强劲增长</td>
+                        </tr>
+                        <tr>
+                            <td>外国投资者占东京新房交易比例</td>
+                            <td><strong>20%-40%</strong></td>
+                            <td>2025年，三菱日联信托银行调查</td>
+                        </tr>
+                        <tr>
+                            <td>日本上半年房地产投资全球排名</td>
+                            <td class="positive"><strong>全球第一</strong>，投资额增长22%</td>
+                            <td>2025年上半年，创有统计以来最高</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <blockquote contenteditable="false">
+                    2025年3月，大东京地区新建公寓平均价格达到<strong>1.0485亿日元</strong>，年增率高达<strong>37.5%</strong>，历史上月平均价格第二次超过1亿日元。
+                </blockquote>
+                
+                <h3 contenteditable="false">日本股市也在涨</h3>
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>指标</th>
+                            <th>数据</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>日经225指数（2026年6月25日收盘）</td>
+                            <td class="metric-highlight">72,467.42点，+4.61%（单日+3,191.37点）</td>
+                        </tr>
+                        <tr>
+                            <td>日经225历史高点</td>
+                            <td>1989年12月 <strong>38,915.87点</strong> → 2024年突破 <strong>40,000点</strong></td>
+                        </tr>
+                        <tr>
+                            <td>2012年安倍经济学起点</td>
+                            <td>约8,000-9,000点</td>
+                        </tr>
+                        <tr>
+                            <td>2012-2024年累计涨幅</td>
+                            <td class="positive">约 <strong>4-5倍</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3 contenteditable="false">关键判断：房市是股市信心的底层来源</h3>
+                <p contenteditable="false">日本案例表明，<strong>房地产和股市不是独立运行的两个市场，而是共享同一个信用底层</strong>：</p>
+                
+                <h4 contenteditable="false">1. 财富效应传导</h4>
+                <ul contenteditable="false">
+                    <li>房价上涨 → 居民资产负债表修复 → 消费和投资信心回升 → 企业盈利改善 → 股市上涨</li>
+                    <li>日本2025年核心CPI连续48个月同比上升，出现"薪资-价格"正向螺旋初期迹象</li>
+                </ul>
+                
+                <h4 contenteditable="false">2. 外资流入的底层逻辑</h4>
+                <ul contenteditable="false">
+                    <li>外资进入日本股市和楼市，底层是对"日本资产重估"的共识</li>
+                    <li>2025年上半年外资占日本房地产投资的<strong>34%</strong>，投资额首次超过<strong>1万亿日元</strong></li>
+                    <li>巴菲特投资日本五大商社，底层也是看好日本资产的长期重估</li>
+                </ul>
+                
+                <h4 contenteditable="false">3. 信用扩张的抵押品</h4>
+                <ul contenteditable="false">
+                    <li>房地产是日本家庭和企业最重要的抵押品</li>
+                    <li>房价上涨 → 抵押品价值上升 → 信贷扩张能力增强 → 经济活动活跃</li>
+                    <li>这正是"信用主体"理论的日本验证</li>
+                </ul>
+                
+                <h4 contenteditable="false">4. 与中国的对比</h4>
+                <table class="comparison-table" contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>维度</th>
+                            <th>日本（2020-2025）</th>
+                            <th>中国（2021-2025）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>房价趋势</strong></td>
+                            <td class="positive">持续上涨，东京大阪创历史新高</td>
+                            <td class="negative">持续下跌，回落至2009年水平</td>
+                        </tr>
+                        <tr>
+                            <td><strong>股市趋势</strong></td>
+                            <td class="positive">日经225突破4万点，创历史新高</td>
+                            <td>A股震荡，房地产指数跌44.61%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>信用底层</strong></td>
+                            <td class="positive">房地产作为抵押品功能恢复</td>
+                            <td class="negative">房地产抵押品功能弱化</td>
+                        </tr>
+                        <tr>
+                            <td><strong>外资态度</strong></td>
+                            <td class="positive">大量外资流入股市和楼市</td>
+                            <td>外资对房地产谨慎</td>
+                        </tr>
+                        <tr>
+                            <td><strong>核心差异</strong></td>
+                            <td class="positive"><strong>房市涨 → 信用扩张 → 股市涨</strong></td>
+                            <td class="negative"><strong>房市跌 → 信用收缩 → 寻找新抵押品</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="key-point" contenteditable="false">
+                    <strong>核心结论：</strong>日本股市上涨的信心，很大程度上来自于房市的复苏。房市作为抵押品的功能恢复，是整个信用体系重新运转的前提。中国当前面临的挑战，正是房地产抵押品功能弱化后，需要找到新的信用承载主体——这就是"科技制造"被推到前台的根本原因。
+                </div>
+                
+                <h3 contenteditable="false">日本房地产复苏的驱动因素</h3>
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>因素</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>低利率环境</td>
+                            <td>日本央行结束负利率但步伐谨慎，融资成本仍全球最低</td>
+                        </tr>
+                        <tr>
+                            <td>日元贬值</td>
+                            <td>吸引外资抄底日本资产</td>
+                        </tr>
+                        <tr>
+                            <td>供应短缺</td>
+                            <td>大东京地区新建公寓供应量降至1973年以来最低</td>
+                        </tr>
+                        <tr>
+                            <td>旅游复苏</td>
+                            <td>入境游客激增，酒店和民宿投资活跃</td>
+                        </tr>
+                        <tr>
+                            <td>城市再开发</td>
+                            <td>东京、大阪持续进行大型城市更新项目</td>
+                        </tr>
+                        <tr>
+                            <td>人口集中</td>
+                            <td>东京、大阪、福冈等核心城市持续人口净流入</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="data-source" contenteditable="false">
+                    <h4>数据来源</h4>
+                    <ul>
+                        <li><a href="https://zh.cn.nikkei.com/industry/propertiesconstruction/55756-2024-05-31-05-00-22.html" target="_blank">全球15城房价：东京大阪涨幅居首（日经中文网）</a></li>
+                        <li><a href="https://www.japan-property.jp/zh-TW/blog-news/details114" target="_blank">2025年东京房地产市场：外国投资者综合指南</a></li>
+                        <li><a href="https://www.globalg.com.tw/article/100" target="_blank">日本不动产市场深度分析与未来展望(2025-2030)</a></li>
+                        <li><a href="https://www.21jingji.com/article/20251106/herald/028888dfe5fbe873f99f7f0ff64376f8.html" target="_blank">日本物价持续高烧，外资大举扫货东京大阪核心区房产（21财经）</a></li>
+                        <li><a href="http://global.mf-realty.jp/report/chinese/detail/1680" target="_blank">PROPERTY MARKET TRENDS｜2025年第1季度（三井不动产）</a></li>
+                        <li><a href="https://indexes.nikkei.co.jp/cz/nkave/index/profile" target="_blank">日经225指数官方数据</a></li>
+                        <li><a href="https://pdf.dfcfw.com/pdf/H3_AP202405201633865160_1.pdf" target="_blank">日本经济、人口变迁与房地产市场发展之启示（财信证券）</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 为什么落在科技制造 -->
+            <div class="section">
+                <h2 contenteditable="false">新的国家信用为什么落在科技制造上？</h2>
+                
+                <h3 contenteditable="false">1. 提高生产率</h3>
+                <p contenteditable="false">产业升级必须带来单位劳动、资本、能源和数据的更高产出，而不只是讲故事。</p>
+                
+                <h3 contenteditable="false">2. 形成真实现金流</h3>
+                <p contenteditable="false">信用可以提前确认未来，但最终要由订单、利润、税收和出口收入兑现。</p>
+                
+                <h3 contenteditable="false">3. 承接战略资源</h3>
+                <p contenteditable="false">财政资金、国有资本、产业基金、采购体系和人才政策，会向战略方向集中。</p>
+                
+                <h3 contenteditable="false">4. 进入全球市场</h3>
+                <p contenteditable="false">只有国内认可还不够。能够被全球供应链、客户和资本重新定价，才有更强信用。</p>
+            </div>
+            
+            <!-- 数据证据 -->
+            <div class="section">
+                <h2 contenteditable="false">数据证据：国家信用正在向高技术产业倾斜</h2>
+                
+                <h3 contenteditable="false">01 / 创新基金 — 政府引导基金规模</h3>
+                <p contenteditable="false">国家把"耐心资本"铺到早期、成长期和产业化环节。政府引导基金是财政资金进入科技产业的主要股权通道。</p>
+                
+                <div class="highlight-box" contenteditable="false">
+                    <p><strong>核心数据：</strong></p>
+                    <ul style="margin: 10px 0 0 20px;">
+                        <li>截至 2024 年底，政府引导基金总目标规模约 <strong>12.84 万亿元</strong>，已认缴约 <strong>7.70 万亿元</strong></li>
+                        <li>累计设立 <strong>2,178 只</strong></li>
+                        <li>2024 年新设产业/创投类 <strong>113 只</strong></li>
+                        <li>2024 年新设认缴 <strong>6,510 亿元</strong></li>
+                    </ul>
+                </div>
+                
+                <div class="data-source" contenteditable="false">
+                    <h4>来源</h4>
+                    <ul>
+                        <li><a href="https://www.cnfin.com/gs-lb/detail/20250226/4192739_1.html" target="_blank">新华财经：引导基金规模</a></li>
+                        <li><a href="https://research.pedaily.cn/202502/546594.shtml" target="_blank">清科：2024 引导基金统计</a></li>
+                        <li><a href="https://www.stats.gov.cn/sj/zxfbhjd/202509/t20250929_1961429.html" target="_blank">国家统计局：R&D 投入</a></li>
+                    </ul>
+                </div>
+                
+                <h3 contenteditable="false">02 / 企业优惠与资助 — 税费优惠与财政科技支出</h3>
+                <p contenteditable="false">全国可比的"资助"，主要体现在税费优惠与财政科技支出。</p>
+                
+                <h4 contenteditable="false">2024 年数据</h4>
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>项目</th>
+                            <th>金额</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>科技创新和制造业减税降费及退税</td>
+                            <td class="metric-highlight">26,293 亿元</td>
+                        </tr>
+                        <tr>
+                            <td>研发费用加计扣除等（支持科技投入和成果转让）</td>
+                            <td><strong>8,069 亿元</strong></td>
+                        </tr>
+                        <tr>
+                            <td>高新企业/新兴产业（含高新企业 15% 所得税等）</td>
+                            <td><strong>4,662 亿元</strong></td>
+                        </tr>
+                        <tr>
+                            <td>财政科学技术支出</td>
+                            <td><strong>12,115 亿元</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="key-point" contenteditable="false">
+                    <strong>关键政策：</strong>
+                    <ul style="margin: 10px 0 0 20px;">
+                        <li>企业所得税：<strong>25% → 15%</strong>（高新技术企业）</li>
+                        <li>研发费用：<strong>100% 加计扣除</strong></li>
+                    </ul>
+                </div>
+                
+                <div class="data-source" contenteditable="false">
+                    <h4>来源</h4>
+                    <ul>
+                        <li><a href="https://www.most.gov.cn/kjbgz/202403/t20240313_189961.html" target="_blank">科技部：科技创新税费政策指引</a></li>
+                        <li><a href="https://shanghai.chinatax.gov.cn/xwdt/ztzl/zhl/yhysgj/gzdt/zjdt/202502/t475254.html" target="_blank">税务总局：2024 科技制造税费优惠</a></li>
+                        <li><a href="https://www.stats.gov.cn/sj/zxfbhjd/202509/t20250929_1961429.html" target="_blank">国家统计局：财政科技支出</a></li>
+                    </ul>
+                </div>
+                
+                <h3 contenteditable="false">03 / IPO 比例 — 上市通道筛选"科技含量"</h3>
+                <p contenteditable="false">上市通道正在用板块结构筛选科技含量。用两个代理口径：</p>
+                <ul contenteditable="false">
+                    <li><strong>宽口径：</strong>科创板 + 创业板 + 北交所 → 创新型上市通道</li>
+                    <li><strong>窄口径：</strong>科创板 + 创业板 → 科创成长板块</li>
+                </ul>
+                
+                <h4 contenteditable="false">2025 年 A 股 IPO（共 116 家）</h4>
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>板块</th>
+                            <th>家数</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>创业板</td><td>33</td></tr>
+                        <tr><td>北交所</td><td>26</td></tr>
+                        <tr><td>科创板</td><td>19</td></tr>
+                        <tr><td>主板</td><td>38</td></tr>
+                    </tbody>
+                </table>
+                
+                <div class="highlight-box" contenteditable="false">
+                    <ul style="margin: 0 0 0 20px;">
+                        <li>创新型板块占比（宽口径）：<strong>67%</strong></li>
+                        <li>科创板 + 创业板（窄口径）：<strong>52 家，约 45%</strong></li>
+                    </ul>
+                </div>
+                
+                <div class="data-source" contenteditable="false">
+                    <h4>来源</h4>
+                    <ul>
+                        <li><a href="https://research.pedaily.cn/202601/559592.shtml" target="_blank">清科：2025 IPO 盘点</a></li>
+                        <li><a href="https://www.sse.com.cn/ipo/listing/" target="_blank">上交所：新股发行一览</a></li>
+                        <li><a href="https://listing.szse.cn/projectdynamic/ipo/index.html" target="_blank">深交所：IPO 项目动态</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 普通人的位置 -->
+            <div class="section">
+                <h2 contenteditable="false">普通人的位置：为什么越来越难赚钱？</h2>
+                
+                <p contenteditable="false">房地产时代，普通人可以通过买房加杠杆，把自己接入中国最大的信用系统。房子上涨，本质上是全社会共同抵押品被重估。</p>
+                
+                <p contenteditable="false">但科技产业时代，信用扩张不再天然平均分配。买一只科技股，不等于参与产业升级；在产业链中拥有技术、订单、资本、组织能力，才更接近新的信用核心。</p>
+                
+                <h3 contenteditable="false">K 型分化</h3>
+                <ul contenteditable="false">
+                    <li><strong>上行一侧：</strong>新的国家信用主体 — 高技术制造、先进产业链、长期资本、全球市场认可</li>
+                    <li><strong>下行一侧：</strong>无法转化为长期现金流、生产率或战略资源承接能力的旧资产和旧模式</li>
+                </ul>
+            </div>
+            
+            <!-- 周期变化 -->
+            <div class="section">
+                <h2 contenteditable="false">周期变化：国家引领能力的周期</h2>
+                
+                <p contenteditable="false">传统经济周期更多来自市场自发波动：需求扩张、库存累积、价格下行、再出清。</p>
+                
+                <p contenteditable="false">但当财政、产业基金、国资、信贷、人才选拔和上市通道都围绕高技术产业重组时，周期的中心就不再只是"市场冷暖"，而是国家把信用投向哪里。</p>
+                
+                <h3 contenteditable="false">旧周期</h3>
+                <p contenteditable="false">需求回升带来资产普涨，普通人可以通过单一大类资产获得 beta。</p>
+                
+                <h3 contenteditable="false">新周期</h3>
+                <p contenteditable="false">国家信用选择方向，财富机会从普遍性机会转向筛选性机会，alpha 更重要。</p>
+            </div>
+            
+            <!-- 结语 -->
+            <div class="section">
+                <h2 contenteditable="false">结语</h2>
+                
+                <div class="highlight-box" contenteditable="false">
+                    <p>未来有信用的，不是有故事的公司，而是能代表中国下一阶段生产率的公司。</p>
+                </div>
+                
+                <p contenteditable="false">新的国家信用，不再主要写在土地价格里，而写在技术路线、产业链位置、财政资源和全球订单里。</p>
+            </div>
+        </div>
+        
+        <div class="footer" contenteditable="false">
+            <p>数据来源均以原文链接为准，截至 2026-06-26 整理。部分数据口径说明详见原始网页。</p>
+            <p style="margin-top: 10px; opacity: 0.7;">本文档支持在线编辑与批注，使用工具栏按钮进行操作</p>
+        </div>
+    </div>
+
+    <script>
+        // ===== 状态管理 =====
+        let isEditing = false;
+        let isAnnotating = false;
+        let currentAnnotation = null;
+        let annotations = JSON.parse(localStorage.getItem('creditAnnotations') || '[]');
+        let annotationIdCounter = parseInt(localStorage.getItem('annotationCounter') || '0');
+
+        // ===== 编辑功能 =====
+        function toggleEdit() {
+            isEditing = !isEditing;
+            const btn = document.getElementById('btnEdit');
+            const body = document.body;
+            
+            if (isEditing) {
+                btn.classList.add('active');
+                btn.textContent = '✅ 完成编辑';
+                body.classList.add('editing');
+                
+                // 使内容可编辑
+                document.querySelectorAll('.section p, .section h2, .section h3, .section h4, .section li, .highlight-box p, .key-point, blockquote').forEach(el => {
+                    el.setAttribute('contenteditable', 'true');
+                });
+                
+                showToast('📝 编辑模式已开启，点击文本即可修改');
+            } else {
+                btn.classList.remove('active');
+                btn.textContent = '✏️ 编辑';
+                body.classList.remove('editing');
+                
+                // 禁用编辑
+                document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+                    el.setAttribute('contenteditable', 'false');
+                });
+                
+                showToast('✅ 编辑模式已关闭');
+            }
+        }
+
+        // ===== 批注功能 =====
+        function toggleAnnotate() {
+            isAnnotating = !isAnnotating;
+            const btn = document.getElementById('btnAnnotate');
+            
+            if (isAnnotating) {
+                btn.classList.add('active');
+                btn.textContent = '✅ 完成批注';
+                document.body.style.cursor = 'crosshair';
+                
+                // 添加文本选择监听
+                document.addEventListener('mouseup', handleTextSelection);
+                showToast('💬 批注模式已开启，选中文字即可添加批注');
+            } else {
+                btn.classList.remove('active');
+                btn.textContent = '💬 批注';
+                document.body.style.cursor = 'default';
+                document.removeEventListener('mouseup', handleTextSelection);
+                closeAnnotationPopup();
+                showToast('✅ 批注模式已关闭');
+            }
+        }
+
+        function handleTextSelection(e) {
+            if (!isAnnotating) return;
+            
+            const selection = window.getSelection();
+            const text = selection.toString().trim();
+            
+            if (text.length > 0) {
+                const range = selection.getRangeAt(0);
+                const rect = range.getBoundingClientRect();
+                
+                showAnnotationPopup(rect, text, selection);
+            }
+        }
+
+        function showAnnotationPopup(rect, text, selection) {
+            const popup = document.getElementById('annotationPopup');
+            const input = document.getElementById('annotationInput');
+            
+            input.value = '';
+            input.placeholder = `为选中的文字添加批注："${text.substring(0, 50)}${text.length > 50 ? '...' : ''}"`;
+            
+            popup.style.display = 'block';
+            popup.style.left = Math.min(rect.left, window.innerWidth - 280) + 'px';
+            popup.style.top = (rect.bottom + 10) + 'px';
+            
+            currentAnnotation = {
+                text: text,
+                selection: selection,
+                range: selection.getRangeAt(0).cloneRange()
+            };
+            
+            input.focus();
+        }
+
+        function closeAnnotationPopup() {
+            document.getElementById('annotationPopup').style.display = 'none';
+            currentAnnotation = null;
+        }
+
+        function saveAnnotation() {
+            if (!currentAnnotation) return;
+            
+            const note = document.getElementById('annotationInput').value.trim();
+            if (!note) {
+                showToast('⚠️ 请输入批注内容');
+                return;
+            }
+            
+            const id = 'anno_' + (++annotationIdCounter);
+            const annotation = {
+                id: id,
+                text: currentAnnotation.text,
+                note: note,
+                timestamp: new Date().toISOString(),
+                url: window.location.href
+            };
+            
+            annotations.push(annotation);
+            saveAnnotations();
+            
+            // 高亮文本
+            highlightText(currentAnnotation.range, id, note);
+            
+            closeAnnotationPopup();
+            updateAnnotationList();
+            updateBadge();
+            showToast('✅ 批注已保存');
+        }
+
+        function deleteAnnotation() {
+            if (!currentAnnotation) return;
+            closeAnnotationPopup();
+            window.getSelection().removeAllRanges();
+        }
+
+        function highlightText(range, id, note) {
+            const span = document.createElement('span');
+            span.className = 'annotation';
+            span.setAttribute('data-note', note);
+            span.setAttribute('data-anno-id', id);
+            span.title = note;
+            
+            try {
+                range.surroundContents(span);
+            } catch (e) {
+                // 跨元素选择时，使用另一种方式
+                const contents = range.extractContents();
+                span.appendChild(contents);
+                range.insertNode(span);
+            }
+        }
+
+        function saveAnnotations() {
+            localStorage.setItem('creditAnnotations', JSON.stringify(annotations));
+            localStorage.setItem('annotationCounter', annotationIdCounter.toString());
+        }
+
+        // ===== 批注侧边栏 =====
+        function toggleSidebar() {
+            document.getElementById('annotationSidebar').classList.toggle('open');
+        }
+
+        function updateAnnotationList() {
+            const list = document.getElementById('annotationList');
+            
+            if (annotations.length === 0) {
+                list.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">暂无批注</p>';
+                return;
+            }
+            
+            list.innerHTML = annotations.map(anno => `
+                <div class="annotation-item">
+                    <div class="anno-text">"${anno.text.substring(0, 60)}${anno.text.length > 60 ? '...' : ''}"</div>
+                    <div class="anno-note">${anno.note}</div>
+                    <div class="anno-time">${formatDate(anno.timestamp)}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateBadge() {
+            const badge = document.getElementById('annotationBadge');
+            if (annotations.length > 0) {
+                badge.textContent = annotations.length;
+                badge.classList.add('show');
+            } else {
+                badge.classList.remove('show');
+            }
+        }
+
+        function formatDate(iso) {
+            const d = new Date(iso);
+            return d.toLocaleString('zh-CN', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // ===== 保存功能 =====
+        function saveContent() {
+            // 保存批注
+            saveAnnotations();
+            
+            // 保存编辑后的HTML到localStorage
+            const html = document.documentElement.outerHTML;
+            localStorage.setItem('creditPageHTML', html);
+            
+            showToast('💾 内容已保存到浏览器本地存储');
+        }
+
+        // ===== 导出功能 =====
+        function exportHTML() {
+            const html = document.documentElement.outerHTML;
+            const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '中国经济的国家信用_编辑版.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('📥 已导出 HTML 文件');
+        }
+
+        // ===== 页面加载时恢复 =====
+        window.addEventListener('load', function() {
+            updateAnnotationList();
+            updateBadge();
+            
+            // 恢复之前保存的编辑内容（如果有）
+            const savedHTML = localStorage.getItem('creditPageHTML');
+            if (savedHTML && savedHTML !== document.documentElement.outerHTML) {
+                // 注意：这里不自动恢复，避免覆盖当前内容
+                // 用户可以通过导出/导入来恢复
+            }
+        });
+
+        // ===== Toast 提示 =====
+        function showToast(message) {
+            const existing = document.querySelector('.toast-message');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 80px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #333;
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-size: 14px;
+                z-index: 10002;
+                animation: toastIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'toastOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // 添加动画样式
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes toastIn {
+                from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+                to { opacity: 1; transform: translateX(-50%) translateY(0); }
+            }
+            @keyframes toastOut {
+                from { opacity: 1; transform: translateX(-50%) translateY(0); }
+                to { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // ===== 键盘快捷键 =====
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + S = 保存
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                saveContent();
+            }
+            
+            // Escape = 关闭弹窗
+            if (e.key === 'Escape') {
+                closeAnnotationPopup();
+            }
+        });
+    </script>
+</body>
+</html>
