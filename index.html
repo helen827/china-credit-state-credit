@@ -3,580 +3,1511 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>中国经济的国家信用 - 核心数据</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>中国经济的国家信用</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: #f5f5f5;
-            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
             line-height: 1.8;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
         }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         
-        header {
-            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
-            padding: 50px 20px;
+            padding: 60px 40px;
             text-align: center;
+            position: relative;
         }
-        header h1 { font-size: 2.5em; margin-bottom: 15px; }
-        header p { font-size: 1.2em; opacity: 0.9; }
         
-        .card {
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+        
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .header .meta {
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+
+        /* ===== 编辑工具栏 ===== */
+        .edit-toolbar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.95);
+            padding: 10px 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .edit-toolbar button {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            font-weight: 500;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+        }
+
+        .btn-edit.active {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .btn-annotate {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+        }
+
+        .btn-annotate:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(243,156,18,0.4);
+        }
+
+        .btn-annotate.active {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(39,174,96,0.4);
+        }
+
+        .btn-export {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+        }
+
+        .btn-export:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(52,152,219,0.4);
+        }
+
+        /* 编辑模式样式 */
+        body.editing [contenteditable="true"] {
+            outline: 2px dashed #667eea;
+            outline-offset: 4px;
+            border-radius: 4px;
+            background: rgba(102,126,234,0.03);
+        }
+
+        body.editing [contenteditable="true"]:hover {
+            outline: 2px solid #667eea;
+            background: rgba(102,126,234,0.06);
+        }
+
+        body.editing [contenteditable="true"]:focus {
+            outline: 2px solid #764ba2;
+            background: rgba(102,126,234,0.08);
+        }
+
+        /* 批注样式 */
+        .annotation {
+            position: relative;
+            display: inline;
+            background: linear-gradient(180deg, transparent 60%, rgba(243,156,18,0.3) 60%);
+            cursor: pointer;
+        }
+
+        .annotation::after {
+            content: attr(data-note);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            white-space: nowrap;
+            z-index: 1000;
+            transition: transform 0.2s;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .annotation:hover::after {
+            transform: translateX(-50%) scale(1);
+        }
+
+        .annotation-popup {
+            position: fixed;
             background: white;
             border-radius: 12px;
-            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            padding: 16px;
+            z-index: 10001;
+            min-width: 250px;
+            display: none;
+        }
+
+        .annotation-popup textarea {
+            width: 100%;
+            min-height: 80px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+
+        .annotation-popup .popup-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .annotation-popup button {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .popup-save {
+            background: #27ae60;
+            color: white;
+        }
+
+        .popup-cancel {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .popup-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        /* 批注侧边栏 */
+        .annotation-sidebar {
+            position: fixed;
+            right: -350px;
+            top: 0;
+            width: 350px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+            z-index: 9999;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            padding: 80px 20px 20px;
+        }
+
+        .annotation-sidebar.open {
+            right: 0;
+        }
+
+        .annotation-sidebar h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f39c12;
+        }
+
+        .annotation-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid #f39c12;
+        }
+
+        .annotation-item .anno-text {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 6px;
+            font-style: italic;
+        }
+
+        .annotation-item .anno-note {
+            font-size: 13px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .annotation-item .anno-time {
+            font-size: 11px;
+            color: #999;
+            margin-top: 6px;
+        }
+
+        .sidebar-toggle {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            z-index: 9998;
+            box-shadow: 0 4px 15px rgba(243,156,18,0.4);
+            transition: all 0.2s;
+        }
+
+        .sidebar-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .sidebar-toggle .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .sidebar-toggle .badge.show {
+            display: block;
+        }
+        
+        .content {
+            padding: 50px 40px;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+        }
+        
+        .section h2 {
+            font-size: 1.8em;
+            color: #1e3c72;
             margin-bottom: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
         }
-        .card h2 {
-            color: #1a237e;
-            border-left: 5px solid #c62828;
-            padding-left: 15px;
-            margin-bottom: 20px;
-            font-size: 1.5em;
+        
+        .section h3 {
+            font-size: 1.4em;
+            color: #2a5298;
+            margin: 30px 0 15px 0;
         }
-        .card h3 {
-            color: #283593;
-            margin: 25px 0 15px 0;
+        
+        .section h4 {
             font-size: 1.2em;
+            color: #444;
+            margin: 25px 0 12px 0;
         }
         
         .highlight-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 25px;
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-left: 5px solid #667eea;
+            padding: 25px 30px;
+            margin: 25px 0;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .highlight-box p {
+            margin: 0;
+            font-size: 1.1em;
+            color: #1e3c72;
+            font-weight: 500;
+        }
+        
+        .key-point {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
             border-radius: 10px;
+            padding: 20px 25px;
             margin: 20px 0;
         }
-        .highlight-box p { margin: 0; font-size: 1.1em; }
+        
+        .key-point strong {
+            color: #856404;
+        }
         
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 15px 0;
+            margin: 20px 0;
             font-size: 0.95em;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
         }
+        
+        thead {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+        
         th, td {
-            padding: 12px;
-            text-align: center;
+            padding: 14px 18px;
+            text-align: left;
             border-bottom: 1px solid #e0e0e0;
         }
+        
         th {
-            background: #1a237e;
-            color: white;
             font-weight: 600;
-        }
-        tr:hover { background: #f8f9fa; }
-        .highlight { background: #fff3e0; font-weight: bold; }
-        .negative { color: #c62828; font-weight: bold; }
-        .positive { color: #2e7d32; font-weight: bold; }
-        
-        .chart-container {
-            position: relative;
-            height: 400px;
-            margin: 20px 0;
-        }
-        .chart-container.large { height: 500px; }
-        
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-        .metric-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 10px;
-            text-align: center;
-        }
-        .metric-card h4 { font-size: 0.9em; opacity: 0.9; margin-bottom: 10px; }
-        .metric-card .value { font-size: 2em; font-weight: bold; }
-        .metric-card .change { font-size: 0.9em; margin-top: 8px; }
-        
-        .source {
+            text-transform: uppercase;
             font-size: 0.85em;
+            letter-spacing: 0.5px;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9ff;
+        }
+        
+        tbody tr:nth-child(even) {
+            background: #fafbfc;
+        }
+        
+        tbody tr:nth-child(even):hover {
+            background: #f0f2ff;
+        }
+        
+        ul, ol {
+            margin: 15px 0 15px 25px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        a:hover {
+            border-bottom-color: #667eea;
+        }
+        
+        .credit-phase {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            border-radius: 15px;
+            padding: 25px 30px;
+            margin: 20px 0;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .credit-phase h4 {
+            color: #1e3c72;
+            margin-top: 0;
+        }
+        
+        .comparison-table {
+            margin: 25px 0;
+        }
+        
+        .comparison-table th {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 30px 40px;
+            text-align: center;
             color: #666;
-            margin-top: 20px;
-            padding-top: 20px;
+            font-size: 0.9em;
             border-top: 1px solid #e0e0e0;
         }
-        .source a { color: #283593; text-decoration: none; }
-        .source a:hover { text-decoration: underline; }
         
-        .section-divider {
-            height: 4px;
-            background: linear-gradient(90deg, #1a237e, #c62828);
-            margin: 40px 0;
-            border-radius: 2px;
+        .tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin: 5px;
+            font-weight: 500;
+        }
+        
+        .data-source {
+            background: #f0f4f8;
+            border-radius: 10px;
+            padding: 20px 25px;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        
+        .data-source h4 {
+            margin-top: 0;
+            color: #1e3c72;
+        }
+        
+        .data-source ul {
+            margin: 10px 0 0 20px;
+        }
+        
+        .data-source li {
+            margin: 5px 0;
+        }
+        
+        blockquote {
+            background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+            border-left: 5px solid #667eea;
+            padding: 20px 25px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+            font-style: italic;
+            color: #555;
+        }
+        
+        .metric-highlight {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #e74c3c;
+        }
+        
+        .positive {
+            color: #27ae60;
+        }
+        
+        .negative {
+            color: #e74c3c;
         }
         
         @media (max-width: 768px) {
-            header h1 { font-size: 1.8em; }
-            .metrics-grid { grid-template-columns: 1fr; }
-            .chart-container { height: 300px; }
+            body {
+                padding: 20px 10px;
+            }
+            
+            .header {
+                padding: 40px 25px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content {
+                padding: 30px 25px;
+            }
+            
+            table {
+                font-size: 0.85em;
+            }
+            
+            th, td {
+                padding: 10px 12px;
+            }
+
+            .edit-toolbar {
+                top: 10px;
+                right: 10px;
+                padding: 8px 10px;
+                gap: 5px;
+            }
+
+            .edit-toolbar button {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            .annotation-sidebar {
+                width: 100%;
+                right: -100%;
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>中国经济的国家信用</h1>
-        <p>三张核心数据表：房地产增加值 | 外贸与外汇储备 | 高技术产业占比</p>
-    </header>
+    <!-- 编辑工具栏 -->
+    <div class="edit-toolbar">
+        <button class="btn-edit" id="btnEdit" onclick="toggleEdit()">✏️ 编辑</button>
+        <button class="btn-annotate" id="btnAnnotate" onclick="toggleAnnotate()">💬 批注</button>
+        <button class="btn-save" onclick="saveContent()">💾 保存</button>
+        <button class="btn-export" onclick="exportHTML()">📥 导出</button>
+    </div>
+
+    <!-- 批注弹窗 -->
+    <div class="annotation-popup" id="annotationPopup">
+        <textarea id="annotationInput" placeholder="输入批注内容..."></textarea>
+        <div class="popup-actions">
+            <button class="popup-delete" onclick="deleteAnnotation()">删除</button>
+            <button class="popup-cancel" onclick="closeAnnotationPopup()">取消</button>
+            <button class="popup-save" onclick="saveAnnotation()">保存</button>
+        </div>
+    </div>
+
+    <!-- 批注侧边栏 -->
+    <div class="annotation-sidebar" id="annotationSidebar">
+        <h3>📋 批注列表</h3>
+        <div id="annotationList"></div>
+    </div>
+
+    <!-- 批注侧边栏切换按钮 -->
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+        💬
+        <span class="badge" id="annotationBadge">0</span>
+    </button>
 
     <div class="container">
-        <!-- 核心判断 -->
-        <div class="card">
-            <h2>核心判断</h2>
-            <div class="highlight-box">
-                <p><strong>房地产退潮，不只是资产价格变化，而是信用主体切换。</strong></p>
-            </div>
-            <p style="margin-top: 15px;">当一个主体能够被国家、银行、居民、资本市场和全球买家共同相信，它就会成为信用扩张的核心抵押品。房地产时代，抵押品是土地和房子；科技产业时代，抵押品正在变成先进制造能力、真实现金流、高技术出口和长期资本市场认可。</p>
+        <div class="header">
+            <h1 contenteditable="false">中国经济的国家信用</h1>
+            <div class="subtitle" contenteditable="false">房地产退潮，不只是资产价格变化，而是信用主体切换</div>
+            <div class="meta" contenteditable="false">来源：https://helen827.github.io/china-credit-state-credit/ | 整理时间：2026-06-26</div>
         </div>
-
-        <!-- 表1：房地产业增加值 -->
-        <div class="card">
-            <h2>表1：房地产业增加值（1998-2021年）</h2>
-            <p>单位：亿元 | 数据来源：国家统计局</p>
-            
-            <div class="chart-container large">
-                <canvas id="realestateChart"></canvas>
-            </div>
-            
-            <table>
-                <tr>
-                    <th>年份</th>
-                    <th>房地产业增加值（亿元）</th>
-                    <th>同比增长</th>
-                    <th>占GDP比重（估算）</th>
-                </tr>
-                <tr><td>1998</td><td>3,866.50</td><td>-</td><td>4.0%</td></tr>
-                <tr><td>1999</td><td>4,221.93</td><td>9.2%</td><td>4.2%</td></tr>
-                <tr><td>2000</td><td>4,849.29</td><td>14.9%</td><td>4.5%</td></tr>
-                <tr><td>2001</td><td>5,616.88</td><td>15.8%</td><td>4.9%</td></tr>
-                <tr><td>2002</td><td>6,484.21</td><td>15.4%</td><td>5.2%</td></tr>
-                <tr><td>2003</td><td>7,605.31</td><td>17.3%</td><td>5.5%</td></tr>
-                <tr><td>2004</td><td>8,941.84</td><td>17.6%</td><td>5.7%</td></tr>
-                <tr><td>2005</td><td>10,341.94</td><td>15.7%</td><td>5.8%</td></tr>
-                <tr><td>2006</td><td>12,622.61</td><td>22.1%</td><td>6.1%</td></tr>
-                <tr><td>2007</td><td>16,808.95</td><td>33.2%</td><td>6.5%</td></tr>
-                <tr><td>2008</td><td>18,449.50</td><td>9.8%</td><td>6.1%</td></tr>
-                <tr><td>2009</td><td>23,227.10</td><td>25.9%</td><td>6.8%</td></tr>
-                <tr><td>2010</td><td>28,668.71</td><td>23.4%</td><td>7.1%</td></tr>
-                <tr><td>2011</td><td>33,712.72</td><td>17.6%</td><td>7.0%</td></tr>
-                <tr><td>2012</td><td>37,761.35</td><td>12.0%</td><td>7.2%</td></tr>
-                <tr><td>2013</td><td>43,962.55</td><td>16.4%</td><td>7.3%</td></tr>
-                <tr><td>2014</td><td>47,971.56</td><td>9.1%</td><td>7.4%</td></tr>
-                <tr><td>2015</td><td>53,732.27</td><td>12.0%</td><td>7.8%</td></tr>
-                <tr><td>2016</td><td>62,066.41</td><td>15.5%</td><td>8.3%</td></tr>
-                <tr><td>2017</td><td>69,257.07</td><td>11.6%</td><td>8.4%</td></tr>
-                <tr><td>2018</td><td>77,632.93</td><td>12.1%</td><td>8.6%</td></tr>
-                <tr><td>2019</td><td>83,320.65</td><td>7.3%</td><td>8.4%</td></tr>
-                <tr><td>2020</td><td>85,533.93</td><td>2.7%</td><td>8.4%</td></tr>
-                <tr class="highlight"><td>2021</td><td><strong>90,397.50</strong></td><td>5.7%</td><td><strong>7.9%</strong></td></tr>
-            </table>
-            
-            <div class="highlight-box" style="margin-top: 20px;">
-                <p><strong>关键数据：</strong>2019年广义房地产全产业链（含建筑、钢铁、水泥、家电等50+行业）合计占GDP比重：<strong>17.2%</strong></p>
-                <p style="margin-top: 10px;">银行贷款中房地产相关占比：<strong>30%-40%</strong>（含开发贷、按揭贷及上下游产业链融资）</p>
-            </div>
-        </div>
-
-        <!-- 表2：外贸与外汇储备 -->
-        <div class="card">
-            <h2>表2：外贸出口与外汇储备增长（1990-2020年）</h2>
-            <p>单位：亿美元 | 数据来源：国家外汇管理局、海关总署</p>
-            
-            <div class="chart-container large">
-                <canvas id="tradeChart"></canvas>
-            </div>
-            
-            <table>
-                <tr>
-                    <th>年份</th>
-                    <th>出口额（亿美元）</th>
-                    <th>外汇储备（亿美元）</th>
-                    <th>外汇储备增速</th>
-                </tr>
-                <tr><td>1990</td><td>621</td><td>111</td><td>-</td></tr>
-                <tr><td>1995</td><td>1,488</td><td>736</td><td>563%</td></tr>
-                <tr><td>2000</td><td>2,492</td><td>1,656</td><td>125%</td></tr>
-                <tr><td>2001</td><td>2,661</td><td>2,122</td><td>28%</td></tr>
-                <tr><td>2002</td><td>3,256</td><td>2,864</td><td>35%</td></tr>
-                <tr><td>2003</td><td>4,382</td><td>4,032</td><td>41%</td></tr>
-                <tr><td>2004</td><td>5,933</td><td>6,099</td><td>51%</td></tr>
-                <tr><td>2005</td><td>7,620</td><td>8,189</td><td>34%</td></tr>
-                <tr><td>2006</td><td>9,691</td><td>10,663</td><td>30%</td></tr>
-                <tr class="highlight"><td>2007</td><td>12,180</td><td><strong>15,282</strong></td><td>43%</td></tr>
-                <tr><td>2008</td><td>14,307</td><td>19,461</td><td>27%</td></tr>
-                <tr><td>2009</td><td>12,016</td><td>23,992</td><td>23%</td></tr>
-                <tr><td>2010</td><td>15,779</td><td>28,473</td><td>19%</td></tr>
-                <tr><td>2011</td><td>18,986</td><td>31,811</td><td>12%</td></tr>
-                <tr><td>2012</td><td>20,489</td><td>33,116</td><td>4%</td></tr>
-                <tr><td>2013</td><td>22,096</td><td>38,213</td><td>15%</td></tr>
-                <tr><td>2014</td><td>23,423</td><td><strong>38,430</strong></td><td>1%</td></tr>
-                <tr><td>2015</td><td>22,765</td><td>33,304</td><td>-13%</td></tr>
-                <tr><td>2016</td><td>20,976</td><td>30,105</td><td>-10%</td></tr>
-                <tr><td>2017</td><td>22,634</td><td>31,399</td><td>4%</td></tr>
-                <tr><td>2018</td><td>24,874</td><td>30,727</td><td>-2%</td></tr>
-                <tr><td>2019</td><td>24,984</td><td>31,079</td><td>1%</td></tr>
-                <tr><td>2020</td><td>25,946</td><td>32,165</td><td>3%</td></tr>
-            </table>
-            
-            <div class="highlight-box" style="margin-top: 20px;">
-                <p><strong>关键节点：</strong></p>
-                <p>• 2001年加入WTO后出口爆发式增长，2001-2007年出口年均增长25%+</p>
-                <p>• 2006年外汇储备首次突破1万亿美元，超越日本成为全球第一</p>
-                <p>• 2014年外汇储备达到峰值3.99万亿美元，此后高位回落稳定在3万亿+</p>
-            </div>
-        </div>
-
-        <!-- 表3：高技术产业 -->
-        <div class="card">
-            <h2>表3：高技术产业GDP占比与高端制造出口增加值</h2>
-            <p>数据来源：国家统计局、海关总署、科技部</p>
-            
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <h4>2024年高技术制造业占规上工业比重</h4>
-                    <div class="value">16.3%</div>
-                    <div class="change">较2015年提升约4个百分点</div>
+        
+        <div class="content">
+            <!-- 核心判断 -->
+            <div class="section">
+                <h2 contenteditable="false">核心判断</h2>
+                <div class="highlight-box" contenteditable="false">
+                    <p>房地产退潮，不只是资产价格变化，而是信用主体切换。</p>
                 </div>
-                <div class="metric-card">
-                    <h4>2024年装备制造业占规上工业比重</h4>
-                    <div class="value">34.6%</div>
-                    <div class="change">制造业升级核心指标</div>
+                <p contenteditable="false">当一个主体能够被国家、银行、居民、资本市场和全球买家共同相信，它就会成为信用扩张的核心抵押品。房地产时代，抵押品是土地和房子；科技产业时代，抵押品正在变成先进制造能力、真实现金流、高技术出口和长期资本市场认可。</p>
+            </div>
+            
+            <!-- 四次迁移 -->
+            <div class="section">
+                <h2 contenteditable="false">中国经济信用体系的四次迁移</h2>
+                <p contenteditable="false">每一代信用主体，都是当时最能把"未来"变成"今天可融资能力"的系统。</p>
+                
+                <div class="credit-phase" contenteditable="false">
+                    <h4>01 — 国家信用</h4>
+                    <ul>
+                        <li><strong>时期：</strong>改革开放前后</li>
+                        <li><strong>机制：</strong>国家掌握资源、组织生产、定义价值</li>
+                        <li><strong>抵押品：</strong>国家资产与计划体系</li>
+                    </ul>
                 </div>
-                <div class="metric-card">
-                    <h4>2024年高技术产品出口占比</h4>
-                    <div class="value">18.2%</div>
-                    <div class="change">货物贸易中高技术产品出口占比</div>
+                
+                <div class="credit-phase" contenteditable="false">
+                    <h4>02 — 外贸企业信用</h4>
+                    <ul>
+                        <li><strong>时期：</strong>加入 WTO 后</li>
+                        <li><strong>机制：</strong>订单、出口能力和美元收入成为企业信用来源</li>
+                        <li><strong>抵押品：</strong>出口企业与全球订单</li>
+                    </ul>
                 </div>
-                <div class="metric-card">
-                    <h4>2024年机电产品出口占比</h4>
-                    <div class="value">59.4%</div>
-                    <div class="change">出口总额中机电产品占比</div>
+                
+                <div class="credit-phase" contenteditable="false">
+                    <h4>03 — 地方政府与房地产信用</h4>
+                    <ul>
+                        <li><strong>时期：</strong>2008 年后</li>
+                        <li><strong>机制：</strong>土地、按揭、城投平台和居民资产负债表形成信用机器</li>
+                        <li><strong>抵押品：</strong>地方政府与房地产资产负债表</li>
+                    </ul>
+                </div>
+                
+                <h3 contenteditable="false">附：房地产行业完整数据</h3>
+                
+                <h4 contenteditable="false">中国房地产从几几年开始？</h4>
+                <p contenteditable="false">中国房地产行业经历了三个关键阶段，真正市场化起步是 <strong>1998年</strong>：</p>
+                
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>阶段</th>
+                            <th>时间</th>
+                            <th>关键事件</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>探索试点阶段</td>
+                            <td>1978-1988年</td>
+                            <td>1980年邓小平提出住房商品化；1982年"三三制"补贴售房试点</td>
+                        </tr>
+                        <tr>
+                            <td>逐步推开阶段</td>
+                            <td>1988-1998年</td>
+                            <td>1988年第一次全国房改会议；1994年《深化城镇住房制度改革决定》</td>
+                        </tr>
+                        <tr>
+                            <td><strong>全面市场化阶段</strong></td>
+                            <td><strong>1998年至今</strong></td>
+                            <td><strong>1998年7月3日国务院"23号令"停止福利分房，实行住房分配货币化</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="key-point" contenteditable="false">
+                    <strong>关键结论：</strong>中国房地产真正商品化、市场化是从<strong>1998年</strong>开始的，但房改源头可追溯至1978年邓小平关于住房问题的讲话。
+                </div>
+                
+                <h4 contenteditable="false">A股房地产板块市值变化</h4>
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>指标</th>
+                            <th>数据</th>
+                            <th>来源</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>房地产行业指数自2021年初累计跌幅</td>
+                            <td class="negative"><strong>-44.61%</strong></td>
+                            <td>中国财富研究院，2026年5月</td>
+                        </tr>
+                        <tr>
+                            <td>跑输沪深300幅度</td>
+                            <td class="negative"><strong>-37.48个百分点</strong></td>
+                            <td>同上</td>
+                        </tr>
+                        <tr>
+                            <td>2025年行业市值管理得分</td>
+                            <td><strong>48.93分</strong>（低于A股均值49.16分）</td>
+                            <td>同上</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4 contenteditable="false">全国房地产销售数据</h4>
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>年份</th>
+                            <th>新建商品房销售面积</th>
+                            <th>销售金额</th>
+                            <th>同比变化</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2024年</td>
+                            <td>97,385万㎡</td>
+                            <td>96,750亿元</td>
+                            <td class="negative">面积-12.9%，金额-17.1%</td>
+                        </tr>
+                        <tr>
+                            <td>历史高点（约2021年）</td>
+                            <td>约179,400万㎡</td>
+                            <td>约181,900亿元</td>
+                            <td>—</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <blockquote contenteditable="false">
+                    2024年销售面积回落至<strong>2009年水平</strong>，销售金额回到<strong>2015-2016年水平</strong>。
+                </blockquote>
+                
+                <h4 contenteditable="false">主要房企市值变化（万科 vs 保利）</h4>
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>时间节点</th>
+                            <th>万科A市值</th>
+                            <th>保利发展市值</th>
+                            <th>备注</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2016年8月（宝能事件后）</td>
+                            <td class="metric-highlight">2,578亿</td>
+                            <td>875亿</td>
+                            <td>万科是保利的2.95倍</td>
+                        </tr>
+                        <tr>
+                            <td>2022年3月11日</td>
+                            <td>1,936亿</td>
+                            <td class="metric-highlight">1,943亿</td>
+                            <td><strong>保利首次反超万科</strong>，成为A股房企市值一哥</td>
+                        </tr>
+                        <tr>
+                            <td>2024-2025年</td>
+                            <td class="negative">持续下滑</td>
+                            <td class="positive">相对抗跌</td>
+                            <td>行业深度调整</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4 contenteditable="false">2025年房地产上市公司综合实力TOP10</h4>
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>排名</th>
+                            <th>企业名称</th>
+                            <th>性质</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>华润置地</td><td><span class="tag">央企</span></td></tr>
+                        <tr><td>2</td><td>保利发展</td><td><span class="tag">央企</span></td></tr>
+                        <tr><td>3</td><td>中国海外发展</td><td><span class="tag">央企</span></td></tr>
+                        <tr><td>4</td><td>招商蛇口</td><td><span class="tag">央企</span></td></tr>
+                        <tr><td>5</td><td>龙湖集团</td><td><span class="tag" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);">民营</span></td></tr>
+                        <tr><td>6</td><td>绿城中国</td><td><span class="tag" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);">混合所有制</span></td></tr>
+                        <tr><td>7</td><td>万科A</td><td><span class="tag" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);">地方国企</span></td></tr>
+                        <tr><td>8</td><td>越秀地产</td><td><span class="tag" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);">地方国企</span></td></tr>
+                        <tr><td>9</td><td>华发股份</td><td><span class="tag" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);">地方国企</span></td></tr>
+                        <tr><td>10</td><td>新城控股</td><td><span class="tag" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);">民营</span></td></tr>
+                    </tbody>
+                </table>
+                
+                <h4 contenteditable="false">市值变化核心趋势</h4>
+                <ul contenteditable="false">
+                    <li><strong>2015-2021年：</strong>黄金末期，万科市值一度超过2500亿</li>
+                    <li><strong>2021-2025年：</strong>深度调整，行业指数累计下跌44.61%，民营房企大面积出险</li>
+                    <li><strong>估值逻辑重塑：</strong>从"规模扩张"转向"现金流稳定性+资产运营能力"，央企/国企房企市值相对抗跌</li>
+                </ul>
+                
+                <div class="data-source" contenteditable="false">
+                    <h4>数据来源</h4>
+                    <ul>
+                        <li><a href="http://paper.people.com.cn/zgjjzk/html/2018-12/24/content_1901586.htm" target="_blank">中国房改历程（人民网）</a></li>
+                        <li><a href="https://m.jiemian.com/article/3526210.html" target="_blank">中国房改回眸1998（界面新闻）</a></li>
+                        <li><a href="http://www.fangchan.com/industry/23/2025-05-22/7330856518818271608.html" target="_blank">2025房地产上市公司测评（中房网）</a></li>
+                        <li><a href="https://wap.eastmoney.com/a/202606173774486673.html" target="_blank">2025市值管理成效盘点（东方财富）</a></li>
+                        <li><a href="https://www.stcn.com/stock/gsdt/202203/t20220312_4233552.html" target="_blank">保利反超万科（证券时报）</a></li>
+                    </ul>
+                </div>
+                
+                <div class="credit-phase" contenteditable="false">
+                    <h4>04 — 中央财政与科技产业信用</h4>
+                    <ul>
+                        <li><strong>时期：</strong>当前</li>
+                        <li><strong>机制：</strong>新信用主体转向能提升生产率、承接战略资源、进入全球市场的科技制造企业</li>
+                        <li><strong>抵押品：</strong>中央财政与高技术产业链</li>
+                    </ul>
                 </div>
             </div>
             
-            <h3>高技术产业增加值占GDP比重变化</h3>
-            <div class="chart-container">
-                <canvas id="hightechChart"></canvas>
+            <!-- 日本对照 -->
+            <div class="section">
+                <h2 contenteditable="false">对照：日本——房市是股市信心的底层来源</h2>
+                
+                <div class="highlight-box" contenteditable="false">
+                    <p>日本提供了一个重要参照：<strong>房价上涨不是股市的副产品，而是股市信心的底层来源。</strong></p>
+                </div>
+                
+                <h3 contenteditable="false">日本房价最近一直在涨</h3>
+                <p contenteditable="false">从2020年开始，日本全境特别是大城市的房地产价格持续走高，东京、大阪的房价以年均15%-30%的涨幅冲向历史高点。</p>
+                
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>指标</th>
+                            <th>数据</th>
+                            <th>时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>东京23区新建公寓均价</td>
+                            <td class="metric-highlight">1.3309亿日元（约624.79万元人民币）</td>
+                            <td>2025年4-9月，同比+20.4%</td>
+                        </tr>
+                        <tr>
+                            <td>东京23区二手房均价</td>
+                            <td class="metric-highlight">每70㎡ 1.1034亿日元（约515.05万元人民币）</td>
+                            <td>2025年9月，首次突破1.1亿日元</td>
+                        </tr>
+                        <tr>
+                            <td>东京住宅价格指数（2020年10月=100）</td>
+                            <td><strong>107.3</strong></td>
+                            <td>2024年4月，连续5次上涨，涨幅1.5%创历史新高</td>
+                        </tr>
+                        <tr>
+                            <td>大阪住宅价格指数（2020年10月=100）</td>
+                            <td><strong>116.6</strong></td>
+                            <td>2024年4月，涨幅同样创新高</td>
+                        </tr>
+                        <tr>
+                            <td>东京23区中古公寓年增率</td>
+                            <td class="metric-highlight">28.3%</td>
+                            <td>2025年4月，数据收集以来最高增长率</td>
+                        </tr>
+                        <tr>
+                            <td>东京23区租金同比涨幅</td>
+                            <td><strong>6.7%</strong></td>
+                            <td>2025年，2019年以来最强劲增长</td>
+                        </tr>
+                        <tr>
+                            <td>外国投资者占东京新房交易比例</td>
+                            <td><strong>20%-40%</strong></td>
+                            <td>2025年，三菱日联信托银行调查</td>
+                        </tr>
+                        <tr>
+                            <td>日本上半年房地产投资全球排名</td>
+                            <td class="positive"><strong>全球第一</strong>，投资额增长22%</td>
+                            <td>2025年上半年，创有统计以来最高</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <blockquote contenteditable="false">
+                    2025年3月，大东京地区新建公寓平均价格达到<strong>1.0485亿日元</strong>，年增率高达<strong>37.5%</strong>，历史上月平均价格第二次超过1亿日元。
+                </blockquote>
+                
+                <h3 contenteditable="false">日本股市也在涨</h3>
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>指标</th>
+                            <th>数据</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>日经225指数（2026年6月25日收盘）</td>
+                            <td class="metric-highlight">72,467.42点，+4.61%（单日+3,191.37点）</td>
+                        </tr>
+                        <tr>
+                            <td>日经225历史高点</td>
+                            <td>1989年12月 <strong>38,915.87点</strong> → 2024年突破 <strong>40,000点</strong></td>
+                        </tr>
+                        <tr>
+                            <td>2012年安倍经济学起点</td>
+                            <td>约8,000-9,000点</td>
+                        </tr>
+                        <tr>
+                            <td>2012-2024年累计涨幅</td>
+                            <td class="positive">约 <strong>4-5倍</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3 contenteditable="false">关键判断：房市是股市信心的底层来源</h3>
+                <p contenteditable="false">日本案例表明，<strong>房地产和股市不是独立运行的两个市场，而是共享同一个信用底层</strong>：</p>
+                
+                <h4 contenteditable="false">1. 财富效应传导</h4>
+                <ul contenteditable="false">
+                    <li>房价上涨 → 居民资产负债表修复 → 消费和投资信心回升 → 企业盈利改善 → 股市上涨</li>
+                    <li>日本2025年核心CPI连续48个月同比上升，出现"薪资-价格"正向螺旋初期迹象</li>
+                </ul>
+                
+                <h4 contenteditable="false">2. 外资流入的底层逻辑</h4>
+                <ul contenteditable="false">
+                    <li>外资进入日本股市和楼市，底层是对"日本资产重估"的共识</li>
+                    <li>2025年上半年外资占日本房地产投资的<strong>34%</strong>，投资额首次超过<strong>1万亿日元</strong></li>
+                    <li>巴菲特投资日本五大商社，底层也是看好日本资产的长期重估</li>
+                </ul>
+                
+                <h4 contenteditable="false">3. 信用扩张的抵押品</h4>
+                <ul contenteditable="false">
+                    <li>房地产是日本家庭和企业最重要的抵押品</li>
+                    <li>房价上涨 → 抵押品价值上升 → 信贷扩张能力增强 → 经济活动活跃</li>
+                    <li>这正是"信用主体"理论的日本验证</li>
+                </ul>
+                
+                <h4 contenteditable="false">4. 与中国的对比</h4>
+                <table class="comparison-table" contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>维度</th>
+                            <th>日本（2020-2025）</th>
+                            <th>中国（2021-2025）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>房价趋势</strong></td>
+                            <td class="positive">持续上涨，东京大阪创历史新高</td>
+                            <td class="negative">持续下跌，回落至2009年水平</td>
+                        </tr>
+                        <tr>
+                            <td><strong>股市趋势</strong></td>
+                            <td class="positive">日经225突破4万点，创历史新高</td>
+                            <td>A股震荡，房地产指数跌44.61%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>信用底层</strong></td>
+                            <td class="positive">房地产作为抵押品功能恢复</td>
+                            <td class="negative">房地产抵押品功能弱化</td>
+                        </tr>
+                        <tr>
+                            <td><strong>外资态度</strong></td>
+                            <td class="positive">大量外资流入股市和楼市</td>
+                            <td>外资对房地产谨慎</td>
+                        </tr>
+                        <tr>
+                            <td><strong>核心差异</strong></td>
+                            <td class="positive"><strong>房市涨 → 信用扩张 → 股市涨</strong></td>
+                            <td class="negative"><strong>房市跌 → 信用收缩 → 寻找新抵押品</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="key-point" contenteditable="false">
+                    <strong>核心结论：</strong>日本股市上涨的信心，很大程度上来自于房市的复苏。房市作为抵押品的功能恢复，是整个信用体系重新运转的前提。中国当前面临的挑战，正是房地产抵押品功能弱化后，需要找到新的信用承载主体——这就是"科技制造"被推到前台的根本原因。
+                </div>
+                
+                <h3 contenteditable="false">日本房地产复苏的驱动因素</h3>
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>因素</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>低利率环境</td>
+                            <td>日本央行结束负利率但步伐谨慎，融资成本仍全球最低</td>
+                        </tr>
+                        <tr>
+                            <td>日元贬值</td>
+                            <td>吸引外资抄底日本资产</td>
+                        </tr>
+                        <tr>
+                            <td>供应短缺</td>
+                            <td>大东京地区新建公寓供应量降至1973年以来最低</td>
+                        </tr>
+                        <tr>
+                            <td>旅游复苏</td>
+                            <td>入境游客激增，酒店和民宿投资活跃</td>
+                        </tr>
+                        <tr>
+                            <td>城市再开发</td>
+                            <td>东京、大阪持续进行大型城市更新项目</td>
+                        </tr>
+                        <tr>
+                            <td>人口集中</td>
+                            <td>东京、大阪、福冈等核心城市持续人口净流入</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="data-source" contenteditable="false">
+                    <h4>数据来源</h4>
+                    <ul>
+                        <li><a href="https://zh.cn.nikkei.com/industry/propertiesconstruction/55756-2024-05-31-05-00-22.html" target="_blank">全球15城房价：东京大阪涨幅居首（日经中文网）</a></li>
+                        <li><a href="https://www.japan-property.jp/zh-TW/blog-news/details114" target="_blank">2025年东京房地产市场：外国投资者综合指南</a></li>
+                        <li><a href="https://www.globalg.com.tw/article/100" target="_blank">日本不动产市场深度分析与未来展望(2025-2030)</a></li>
+                        <li><a href="https://www.21jingji.com/article/20251106/herald/028888dfe5fbe873f99f7f0ff64376f8.html" target="_blank">日本物价持续高烧，外资大举扫货东京大阪核心区房产（21财经）</a></li>
+                        <li><a href="http://global.mf-realty.jp/report/chinese/detail/1680" target="_blank">PROPERTY MARKET TRENDS｜2025年第1季度（三井不动产）</a></li>
+                        <li><a href="https://indexes.nikkei.co.jp/cz/nkave/index/profile" target="_blank">日经225指数官方数据</a></li>
+                        <li><a href="https://pdf.dfcfw.com/pdf/H3_AP202405201633865160_1.pdf" target="_blank">日本经济、人口变迁与房地产市场发展之启示（财信证券）</a></li>
+                    </ul>
+                </div>
             </div>
             
-            <table>
-                <tr>
-                    <th>年份</th>
-                    <th>高技术制造业增加值增速</th>
-                    <th>占规上工业比重</th>
-                    <th>高技术产品出口占比</th>
-                </tr>
-                <tr><td>2015</td><td>10.2%</td><td>11.8%</td><td>29.4%</td></tr>
-                <tr><td>2016</td><td>10.8%</td><td>12.4%</td><td>29.5%</td></tr>
-                <tr><td>2017</td><td>13.4%</td><td>12.7%</td><td>30.2%</td></tr>
-                <tr><td>2018</td><td>11.7%</td><td>13.3%</td><td>30.7%</td></tr>
-                <tr><td>2019</td><td>8.8%</td><td>14.1%</td><td>29.8%</td></tr>
-                <tr><td>2020</td><td>7.1%</td><td>15.1%</td><td>30.6%</td></tr>
-                <tr><td>2021</td><td>18.2%</td><td>15.7%</td><td>29.0%</td></tr>
-                <tr><td>2022</td><td>7.4%</td><td>15.5%</td><td>27.6%</td></tr>
-                <tr><td>2023</td><td>2.7%</td><td>15.7%</td><td>27.3%</td></tr>
-                <tr class="highlight"><td>2024</td><td><strong>8.9%</strong></td><td><strong>16.3%</strong></td><td><strong>18.2%</strong>*</td></tr>
-            </table>
-            <p style="font-size: 0.9em; color: #666; margin-top: 10px;">* 2024年高技术产品出口占比口径调整为货物贸易总额占比，此前为出口总额占比</p>
+            <!-- 为什么落在科技制造 -->
+            <div class="section">
+                <h2 contenteditable="false">新的国家信用为什么落在科技制造上？</h2>
+                
+                <h3 contenteditable="false">1. 提高生产率</h3>
+                <p contenteditable="false">产业升级必须带来单位劳动、资本、能源和数据的更高产出，而不只是讲故事。</p>
+                
+                <h3 contenteditable="false">2. 形成真实现金流</h3>
+                <p contenteditable="false">信用可以提前确认未来，但最终要由订单、利润、税收和出口收入兑现。</p>
+                
+                <h3 contenteditable="false">3. 承接战略资源</h3>
+                <p contenteditable="false">财政资金、国有资本、产业基金、采购体系和人才政策，会向战略方向集中。</p>
+                
+                <h3 contenteditable="false">4. 进入全球市场</h3>
+                <p contenteditable="false">只有国内认可还不够。能够被全球供应链、客户和资本重新定价，才有更强信用。</p>
+            </div>
             
-            <h3>高端制造出口"新三样"（2023-2024年）</h3>
-            <table>
-                <tr>
-                    <th>产品类别</th>
-                    <th>2023年出口额</th>
-                    <th>2024年出口额</th>
-                    <th>同比增长</th>
-                </tr>
-                <tr><td>电动汽车</td><td>约4,200亿元</td><td>约5,800亿元</td><td class="positive">+38%</td></tr>
-                <tr><td>锂电池</td><td>约3,800亿元</td><td>约4,500亿元</td><td class="positive">+18%</td></tr>
-                <tr><td>太阳能电池</td><td>约2,600亿元</td><td>约3,200亿元</td><td class="positive">+23%</td></tr>
-                <tr class="highlight"><td><strong>"新三样"合计</strong></td><td><strong>约10,600亿元</strong></td><td><strong>约13,500亿元</strong></td><td class="positive"><strong>+27%</strong></td></tr>
-            </table>
+            <!-- 数据证据 -->
+            <div class="section">
+                <h2 contenteditable="false">数据证据：国家信用正在向高技术产业倾斜</h2>
+                
+                <h3 contenteditable="false">01 / 创新基金 — 政府引导基金规模</h3>
+                <p contenteditable="false">国家把"耐心资本"铺到早期、成长期和产业化环节。政府引导基金是财政资金进入科技产业的主要股权通道。</p>
+                
+                <div class="highlight-box" contenteditable="false">
+                    <p><strong>核心数据：</strong></p>
+                    <ul style="margin: 10px 0 0 20px;">
+                        <li>截至 2024 年底，政府引导基金总目标规模约 <strong>12.84 万亿元</strong>，已认缴约 <strong>7.70 万亿元</strong></li>
+                        <li>累计设立 <strong>2,178 只</strong></li>
+                        <li>2024 年新设产业/创投类 <strong>113 只</strong></li>
+                        <li>2024 年新设认缴 <strong>6,510 亿元</strong></li>
+                    </ul>
+                </div>
+                
+                <div class="data-source" contenteditable="false">
+                    <h4>来源</h4>
+                    <ul>
+                        <li><a href="https://www.cnfin.com/gs-lb/detail/20250226/4192739_1.html" target="_blank">新华财经：引导基金规模</a></li>
+                        <li><a href="https://research.pedaily.cn/202502/546594.shtml" target="_blank">清科：2024 引导基金统计</a></li>
+                        <li><a href="https://www.stats.gov.cn/sj/zxfbhjd/202509/t20250929_1961429.html" target="_blank">国家统计局：R&D 投入</a></li>
+                    </ul>
+                </div>
+                
+                <h3 contenteditable="false">02 / 企业优惠与资助 — 税费优惠与财政科技支出</h3>
+                <p contenteditable="false">全国可比的"资助"，主要体现在税费优惠与财政科技支出。</p>
+                
+                <h4 contenteditable="false">2024 年数据</h4>
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>项目</th>
+                            <th>金额</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>科技创新和制造业减税降费及退税</td>
+                            <td class="metric-highlight">26,293 亿元</td>
+                        </tr>
+                        <tr>
+                            <td>研发费用加计扣除等（支持科技投入和成果转让）</td>
+                            <td><strong>8,069 亿元</strong></td>
+                        </tr>
+                        <tr>
+                            <td>高新企业/新兴产业（含高新企业 15% 所得税等）</td>
+                            <td><strong>4,662 亿元</strong></td>
+                        </tr>
+                        <tr>
+                            <td>财政科学技术支出</td>
+                            <td><strong>12,115 亿元</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="key-point" contenteditable="false">
+                    <strong>关键政策：</strong>
+                    <ul style="margin: 10px 0 0 20px;">
+                        <li>企业所得税：<strong>25% → 15%</strong>（高新技术企业）</li>
+                        <li>研发费用：<strong>100% 加计扣除</strong></li>
+                    </ul>
+                </div>
+                
+                <div class="data-source" contenteditable="false">
+                    <h4>来源</h4>
+                    <ul>
+                        <li><a href="https://www.most.gov.cn/kjbgz/202403/t20240313_189961.html" target="_blank">科技部：科技创新税费政策指引</a></li>
+                        <li><a href="https://shanghai.chinatax.gov.cn/xwdt/ztzl/zhl/yhysgj/gzdt/zjdt/202502/t475254.html" target="_blank">税务总局：2024 科技制造税费优惠</a></li>
+                        <li><a href="https://www.stats.gov.cn/sj/zxfbhjd/202509/t20250929_1961429.html" target="_blank">国家统计局：财政科技支出</a></li>
+                    </ul>
+                </div>
+                
+                <h3 contenteditable="false">03 / IPO 比例 — 上市通道筛选"科技含量"</h3>
+                <p contenteditable="false">上市通道正在用板块结构筛选科技含量。用两个代理口径：</p>
+                <ul contenteditable="false">
+                    <li><strong>宽口径：</strong>科创板 + 创业板 + 北交所 → 创新型上市通道</li>
+                    <li><strong>窄口径：</strong>科创板 + 创业板 → 科创成长板块</li>
+                </ul>
+                
+                <h4 contenteditable="false">2025 年 A 股 IPO（共 116 家）</h4>
+                <table contenteditable="false">
+                    <thead>
+                        <tr>
+                            <th>板块</th>
+                            <th>家数</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>创业板</td><td>33</td></tr>
+                        <tr><td>北交所</td><td>26</td></tr>
+                        <tr><td>科创板</td><td>19</td></tr>
+                        <tr><td>主板</td><td>38</td></tr>
+                    </tbody>
+                </table>
+                
+                <div class="highlight-box" contenteditable="false">
+                    <ul style="margin: 0 0 0 20px;">
+                        <li>创新型板块占比（宽口径）：<strong>67%</strong></li>
+                        <li>科创板 + 创业板（窄口径）：<strong>52 家，约 45%</strong></li>
+                    </ul>
+                </div>
+                
+                <div class="data-source" contenteditable="false">
+                    <h4>来源</h4>
+                    <ul>
+                        <li><a href="https://research.pedaily.cn/202601/559592.shtml" target="_blank">清科：2025 IPO 盘点</a></li>
+                        <li><a href="https://www.sse.com.cn/ipo/listing/" target="_blank">上交所：新股发行一览</a></li>
+                        <li><a href="https://listing.szse.cn/projectdynamic/ipo/index.html" target="_blank">深交所：IPO 项目动态</a></li>
+                    </ul>
+                </div>
+            </div>
             
-            <h3>数字经济与"三新"经济</h3>
-            <table>
-                <tr>
-                    <th>指标</th>
-                    <th>2022年</th>
-                    <th>2024年</th>
-                    <th>变化</th>
-                </tr>
-                <tr>
-                    <td>数字经济规模</td>
-                    <td>50.2万亿元</td>
-                    <td>约60万亿元</td>
-                    <td class="positive">+20%</td>
-                </tr>
-                <tr>
-                    <td>数字经济占GDP比重</td>
-                    <td>41.5%</td>
-                    <td>约42%</td>
-                    <td class="positive">持续提升</td>
-                </tr>
-                <tr>
-                    <td>"三新"经济增加值占GDP</td>
-                    <td>17.36%</td>
-                    <td>超过18%</td>
-                    <td class="positive">+0.6pp</td>
-                </tr>
-                <tr>
-                    <td>数字经济核心产业占GDP</td>
-                    <td>约8%</td>
-                    <td>约10%</td>
-                    <td class="positive">提前完成"十四五"目标</td>
-                </tr>
-            </table>
+            <!-- 普通人的位置 -->
+            <div class="section">
+                <h2 contenteditable="false">普通人的位置：为什么越来越难赚钱？</h2>
+                
+                <p contenteditable="false">房地产时代，普通人可以通过买房加杠杆，把自己接入中国最大的信用系统。房子上涨，本质上是全社会共同抵押品被重估。</p>
+                
+                <p contenteditable="false">但科技产业时代，信用扩张不再天然平均分配。买一只科技股，不等于参与产业升级；在产业链中拥有技术、订单、资本、组织能力，才更接近新的信用核心。</p>
+                
+                <h3 contenteditable="false">K 型分化</h3>
+                <ul contenteditable="false">
+                    <li><strong>上行一侧：</strong>新的国家信用主体 — 高技术制造、先进产业链、长期资本、全球市场认可</li>
+                    <li><strong>下行一侧：</strong>无法转化为长期现金流、生产率或战略资源承接能力的旧资产和旧模式</li>
+                </ul>
+            </div>
             
-            <div class="highlight-box" style="margin-top: 20px;">
-                <p><strong>核心结论：</strong></p>
-                <p>• 高技术制造业增加值占规上工业比重从2015年的11.8%提升至2024年的16.3%，持续上升</p>
-                <p>• 高端制造出口"新三样"2023年首次突破万亿大关，2024年继续高速增长27%</p>
-                <p>• 数字经济占GDP比重已达42%，"三新"经济占比超18%，成为经济增长核心动能</p>
+            <!-- 周期变化 -->
+            <div class="section">
+                <h2 contenteditable="false">周期变化：国家引领能力的周期</h2>
+                
+                <p contenteditable="false">传统经济周期更多来自市场自发波动：需求扩张、库存累积、价格下行、再出清。</p>
+                
+                <p contenteditable="false">但当财政、产业基金、国资、信贷、人才选拔和上市通道都围绕高技术产业重组时，周期的中心就不再只是"市场冷暖"，而是国家把信用投向哪里。</p>
+                
+                <h3 contenteditable="false">旧周期</h3>
+                <p contenteditable="false">需求回升带来资产普涨，普通人可以通过单一大类资产获得 beta。</p>
+                
+                <h3 contenteditable="false">新周期</h3>
+                <p contenteditable="false">国家信用选择方向，财富机会从普遍性机会转向筛选性机会，alpha 更重要。</p>
+            </div>
+            
+            <!-- 结语 -->
+            <div class="section">
+                <h2 contenteditable="false">结语</h2>
+                
+                <div class="highlight-box" contenteditable="false">
+                    <p>未来有信用的，不是有故事的公司，而是能代表中国下一阶段生产率的公司。</p>
+                </div>
+                
+                <p contenteditable="false">新的国家信用，不再主要写在土地价格里，而写在技术路线、产业链位置、财政资源和全球订单里。</p>
             </div>
         </div>
-
-        <!-- 信用主体切换总结 -->
-        <div class="card">
-            <h2>信用主体切换：从房地产到高技术产业</h2>
-            
-            <div class="section-divider"></div>
-            
-            <h3>第一阶段：房地产信用（1998-2021）</h3>
-            <table>
-                <tr>
-                    <th>指标</th>
-                    <th>峰值/关键数据</th>
-                    <th>当前状态</th>
-                </tr>
-                <tr>
-                    <td>房地产业增加值</td>
-                    <td>90,397亿元（2021年）</td>
-                    <td>占比从8.6%降至约6%</td>
-                </tr>
-                <tr>
-                    <td>广义房地产产业链占GDP</td>
-                    <td>17.2%（2019年）</td>
-                    <td>持续收缩</td>
-                </tr>
-                <tr>
-                    <td>银行贷款中房地产占比</td>
-                    <td>30%-40%</td>
-                    <td>风险暴露，不良率上升</td>
-                </tr>
-            </table>
-            
-            <h3>第二阶段：外贸企业信用（2001-2014）</h3>
-            <table>
-                <tr>
-                    <th>指标</th>
-                    <th>峰值/关键数据</th>
-                    <th>当前状态</th>
-                </tr>
-                <tr>
-                    <td>出口额</td>
-                    <td>25,946亿美元（2020年，疫情后高峰）</td>
-                    <td>结构升级，机电产品占59.4%</td>
-                </tr>
-                <tr>
-                    <td>外汇储备</td>
-                    <td>39,688亿美元（2014年8月）</td>
-                    <td>稳定在32,000亿美元左右</td>
-                </tr>
-                <tr>
-                    <td>全球贸易地位</td>
-                    <td>2013年成为全球第一货物贸易大国</td>
-                    <td>连续8年保持全球第一</td>
-                </tr>
-            </table>
-            
-            <h3>第三阶段：高技术产业信用（当前）</h3>
-            <table>
-                <tr>
-                    <th>指标</th>
-                    <th>当前数据</th>
-                    <th>趋势</th>
-                </tr>
-                <tr>
-                    <td>高技术制造业占规上工业</td>
-                    <td>16.3%（2024年）</td>
-                    <td class="positive">持续上升</td>
-                </tr>
-                <tr>
-                    <td>高端装备出口"新三样"</td>
-                    <td>约13,500亿元（2024年）</td>
-                    <td class="positive">+27%高增长</td>
-                </tr>
-                <tr>
-                    <td>数字经济占GDP</td>
-                    <td>约42%</td>
-                    <td class="positive">持续提升</td>
-                </tr>
-                <tr>
-                    <td>研发投入强度</td>
-                    <td>2.64%（2023年）</td>
-                    <td class="positive">超过欧盟平均水平</td>
-                </tr>
-            </table>
-            
-            <div class="highlight-box" style="margin-top: 30px;">
-                <p><strong>最终结论：</strong></p>
-                <p style="margin-top: 10px;">未来有信用的，不是有故事的公司，而是能代表中国下一阶段生产率的公司。</p>
-                <p style="margin-top: 10px;">新的国家信用，不再主要写在土地价格里，而写在技术路线、产业链位置、财政资源和全球订单里。</p>
-            </div>
-        </div>
-
-        <!-- 页脚 -->
-        <div class="source" style="text-align: center; padding: 30px; color: #666;">
-            <p>数据来源：国家统计局、海关总署、国家外汇管理局、科技部、中国人民银行</p>
-            <p>整理时间：2026-06-26 | 仅供参考，不构成投资建议</p>
+        
+        <div class="footer" contenteditable="false">
+            <p>数据来源均以原文链接为准，截至 2026-06-26 整理。部分数据口径说明详见原始网页。</p>
+            <p style="margin-top: 10px; opacity: 0.7;">本文档支持在线编辑与批注，使用工具栏按钮进行操作</p>
         </div>
     </div>
 
     <script>
-        // 表1：房地产业增加值图表
-        const realestateCtx = document.getElementById('realestateChart').getContext('2d');
-        new Chart(realestateCtx, {
-            type: 'line',
-            data: {
-                labels: ['1998', '2000', '2002', '2004', '2006', '2008', '2010', '2012', '2014', '2016', '2018', '2020', '2021'],
-                datasets: [{
-                    label: '房地产业增加值（亿元）',
-                    data: [3866, 4849, 6484, 8942, 12623, 18450, 28669, 37761, 47972, 62066, 77633, 85534, 90398],
-                    borderColor: '#c62828',
-                    backgroundColor: 'rgba(198, 40, 40, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 6,
-                    pointBackgroundColor: '#c62828'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: '房地产业增加值从3866亿增长至90398亿，23年增长23.4倍',
-                        font: { size: 16, weight: 'bold' }
-                    },
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return value >= 10000 ? (value/10000).toFixed(1) + '万亿' : value + '亿';
-                            }
-                        }
-                    }
-                }
+        // ===== 状态管理 =====
+        let isEditing = false;
+        let isAnnotating = false;
+        let currentAnnotation = null;
+        let annotations = JSON.parse(localStorage.getItem('creditAnnotations') || '[]');
+        let annotationIdCounter = parseInt(localStorage.getItem('annotationCounter') || '0');
+
+        // ===== 编辑功能 =====
+        function toggleEdit() {
+            isEditing = !isEditing;
+            const btn = document.getElementById('btnEdit');
+            const body = document.body;
+            
+            if (isEditing) {
+                btn.classList.add('active');
+                btn.textContent = '✅ 完成编辑';
+                body.classList.add('editing');
+                
+                // 使内容可编辑
+                document.querySelectorAll('.section p, .section h2, .section h3, .section h4, .section li, .highlight-box p, .key-point, blockquote').forEach(el => {
+                    el.setAttribute('contenteditable', 'true');
+                });
+                
+                showToast('📝 编辑模式已开启，点击文本即可修改');
+            } else {
+                btn.classList.remove('active');
+                btn.textContent = '✏️ 编辑';
+                body.classList.remove('editing');
+                
+                // 禁用编辑
+                document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+                    el.setAttribute('contenteditable', 'false');
+                });
+                
+                showToast('✅ 编辑模式已关闭');
+            }
+        }
+
+        // ===== 批注功能 =====
+        function toggleAnnotate() {
+            isAnnotating = !isAnnotating;
+            const btn = document.getElementById('btnAnnotate');
+            
+            if (isAnnotating) {
+                btn.classList.add('active');
+                btn.textContent = '✅ 完成批注';
+                document.body.style.cursor = 'crosshair';
+                
+                // 添加文本选择监听
+                document.addEventListener('mouseup', handleTextSelection);
+                showToast('💬 批注模式已开启，选中文字即可添加批注');
+            } else {
+                btn.classList.remove('active');
+                btn.textContent = '💬 批注';
+                document.body.style.cursor = 'default';
+                document.removeEventListener('mouseup', handleTextSelection);
+                closeAnnotationPopup();
+                showToast('✅ 批注模式已关闭');
+            }
+        }
+
+        function handleTextSelection(e) {
+            if (!isAnnotating) return;
+            
+            const selection = window.getSelection();
+            const text = selection.toString().trim();
+            
+            if (text.length > 0) {
+                const range = selection.getRangeAt(0);
+                const rect = range.getBoundingClientRect();
+                
+                showAnnotationPopup(rect, text, selection);
+            }
+        }
+
+        function showAnnotationPopup(rect, text, selection) {
+            const popup = document.getElementById('annotationPopup');
+            const input = document.getElementById('annotationInput');
+            
+            input.value = '';
+            input.placeholder = `为选中的文字添加批注："${text.substring(0, 50)}${text.length > 50 ? '...' : ''}"`;
+            
+            popup.style.display = 'block';
+            popup.style.left = Math.min(rect.left, window.innerWidth - 280) + 'px';
+            popup.style.top = (rect.bottom + 10) + 'px';
+            
+            currentAnnotation = {
+                text: text,
+                selection: selection,
+                range: selection.getRangeAt(0).cloneRange()
+            };
+            
+            input.focus();
+        }
+
+        function closeAnnotationPopup() {
+            document.getElementById('annotationPopup').style.display = 'none';
+            currentAnnotation = null;
+        }
+
+        function saveAnnotation() {
+            if (!currentAnnotation) return;
+            
+            const note = document.getElementById('annotationInput').value.trim();
+            if (!note) {
+                showToast('⚠️ 请输入批注内容');
+                return;
+            }
+            
+            const id = 'anno_' + (++annotationIdCounter);
+            const annotation = {
+                id: id,
+                text: currentAnnotation.text,
+                note: note,
+                timestamp: new Date().toISOString(),
+                url: window.location.href
+            };
+            
+            annotations.push(annotation);
+            saveAnnotations();
+            
+            // 高亮文本
+            highlightText(currentAnnotation.range, id, note);
+            
+            closeAnnotationPopup();
+            updateAnnotationList();
+            updateBadge();
+            showToast('✅ 批注已保存');
+        }
+
+        function deleteAnnotation() {
+            if (!currentAnnotation) return;
+            closeAnnotationPopup();
+            window.getSelection().removeAllRanges();
+        }
+
+        function highlightText(range, id, note) {
+            const span = document.createElement('span');
+            span.className = 'annotation';
+            span.setAttribute('data-note', note);
+            span.setAttribute('data-anno-id', id);
+            span.title = note;
+            
+            try {
+                range.surroundContents(span);
+            } catch (e) {
+                // 跨元素选择时，使用另一种方式
+                const contents = range.extractContents();
+                span.appendChild(contents);
+                range.insertNode(span);
+            }
+        }
+
+        function saveAnnotations() {
+            localStorage.setItem('creditAnnotations', JSON.stringify(annotations));
+            localStorage.setItem('annotationCounter', annotationIdCounter.toString());
+        }
+
+        // ===== 批注侧边栏 =====
+        function toggleSidebar() {
+            document.getElementById('annotationSidebar').classList.toggle('open');
+        }
+
+        function updateAnnotationList() {
+            const list = document.getElementById('annotationList');
+            
+            if (annotations.length === 0) {
+                list.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">暂无批注</p>';
+                return;
+            }
+            
+            list.innerHTML = annotations.map(anno => `
+                <div class="annotation-item">
+                    <div class="anno-text">"${anno.text.substring(0, 60)}${anno.text.length > 60 ? '...' : ''}"</div>
+                    <div class="anno-note">${anno.note}</div>
+                    <div class="anno-time">${formatDate(anno.timestamp)}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateBadge() {
+            const badge = document.getElementById('annotationBadge');
+            if (annotations.length > 0) {
+                badge.textContent = annotations.length;
+                badge.classList.add('show');
+            } else {
+                badge.classList.remove('show');
+            }
+        }
+
+        function formatDate(iso) {
+            const d = new Date(iso);
+            return d.toLocaleString('zh-CN', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // ===== 保存功能 =====
+        function saveContent() {
+            // 保存批注
+            saveAnnotations();
+            
+            // 保存编辑后的HTML到localStorage
+            const html = document.documentElement.outerHTML;
+            localStorage.setItem('creditPageHTML', html);
+            
+            showToast('💾 内容已保存到浏览器本地存储');
+        }
+
+        // ===== 导出功能 =====
+        function exportHTML() {
+            const html = document.documentElement.outerHTML;
+            const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '中国经济的国家信用_编辑版.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('📥 已导出 HTML 文件');
+        }
+
+        // ===== 页面加载时恢复 =====
+        window.addEventListener('load', function() {
+            updateAnnotationList();
+            updateBadge();
+            
+            // 恢复之前保存的编辑内容（如果有）
+            const savedHTML = localStorage.getItem('creditPageHTML');
+            if (savedHTML && savedHTML !== document.documentElement.outerHTML) {
+                // 注意：这里不自动恢复，避免覆盖当前内容
+                // 用户可以通过导出/导入来恢复
             }
         });
 
-        // 表2：外贸与外汇储备图表
-        const tradeCtx = document.getElementById('tradeChart').getContext('2d');
-        new Chart(tradeCtx, {
-            type: 'line',
-            data: {
-                labels: ['1990', '1995', '2000', '2005', '2007', '2010', '2012', '2014', '2016', '2018', '2020'],
-                datasets: [
-                    {
-                        label: '出口额（亿美元）',
-                        data: [621, 1488, 2492, 7620, 12180, 15779, 20489, 23423, 20976, 24874, 25946],
-                        borderColor: '#1a237e',
-                        backgroundColor: 'rgba(26, 35, 126, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4,
-                        yAxisID: 'y'
-                    },
-                    {
-                        label: '外汇储备（亿美元）',
-                        data: [111, 736, 1656, 8189, 15282, 28473, 33116, 38430, 30105, 30727, 32165],
-                        borderColor: '#667eea',
-                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4,
-                        yAxisID: 'y1'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: '出口与外汇储备同步增长，2014年外储达峰值3.99万亿美元',
-                        font: { size: 16, weight: 'bold' }
-                    }
-                },
-                scales: {
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        title: { display: true, text: '出口额（亿美元）' }
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        title: { display: true, text: '外汇储备（亿美元）' },
-                        grid: { drawOnChartArea: false }
-                    }
-                }
-            }
-        });
+        // ===== Toast 提示 =====
+        function showToast(message) {
+            const existing = document.querySelector('.toast-message');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 80px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #333;
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-size: 14px;
+                z-index: 10002;
+                animation: toastIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'toastOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
 
-        // 表3：高技术产业图表
-        const hightechCtx = document.getElementById('hightechChart').getContext('2d');
-        new Chart(hightechCtx, {
-            type: 'bar',
-            data: {
-                labels: ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'],
-                datasets: [{
-                    label: '高技术制造业占规上工业比重（%）',
-                    data: [11.8, 12.4, 12.7, 13.3, 14.1, 15.1, 15.7, 15.5, 15.7, 16.3],
-                    backgroundColor: 'rgba(102, 126, 234, 0.8)',
-                    borderColor: '#667eea',
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: '高技术制造业占比从11.8%提升至16.3%，持续上升',
-                        font: { size: 16, weight: 'bold' }
-                    },
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 20,
-                        ticks: {
-                            callback: function(value) {
-                                return value + '%';
-                            }
-                        }
-                    }
-                }
+        // 添加动画样式
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes toastIn {
+                from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+                to { opacity: 1; transform: translateX(-50%) translateY(0); }
+            }
+            @keyframes toastOut {
+                from { opacity: 1; transform: translateX(-50%) translateY(0); }
+                to { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // ===== 键盘快捷键 =====
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + S = 保存
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                saveContent();
+            }
+            
+            // Escape = 关闭弹窗
+            if (e.key === 'Escape') {
+                closeAnnotationPopup();
             }
         });
     </script>
